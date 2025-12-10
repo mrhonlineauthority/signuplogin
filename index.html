@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
+<title>Login & Signup</title>
 <style>
     body {
         margin: 0;
@@ -16,7 +16,7 @@
         height: 100vh;
     }
 
-    .login-box {
+    .box {
         width: 90%;
         max-width: 380px;
         background: #ffffff;
@@ -33,7 +33,7 @@
     }
 
     h2 {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         color: #333;
         font-size: 28px;
         font-weight: bold;
@@ -92,13 +92,22 @@
         transition: 0.2s;
     }
 
+    .google-btn img {
+        width: 24px;
+    }
+
     .google-btn:hover {
         background: #f7f7f7;
         transform: scale(1.02);
     }
 
-    .google-btn img {
-        width: 24px;
+    .toggle-btn {
+        margin-top: 15px;
+        font-size: 14px;
+        background: none;
+        color: #007bff;
+        border: none;
+        cursor: pointer;
     }
 
     .success-box {
@@ -110,7 +119,6 @@
         text-align: center;
         display: none;
         box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        animation: fadeIn 0.4s ease;
     }
 
     .success-icon {
@@ -128,65 +136,104 @@
 </head>
 <body>
 
-<div class="login-box" id="loginPage">
+<!-- Login Box -->
+<div class="box" id="loginBox">
     <h2>Login</h2>
-
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
     <button onclick="emailLogin()">Login</button>
 
     <button class="google-btn" onclick="googleLogin()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
         Login with Google
     </button>
+
+    <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
 </div>
 
-<div class="success-box" id="successPage">
+<!-- Signup Box -->
+<div class="box" id="signupBox" style="display:none;">
+    <h2>Sign Up</h2>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <button onclick="emailSignup()">Sign Up</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Sign Up with Google
+    </button>
+
+    <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
+</div>
+
+<!-- Success Box -->
+<div class="success-box" id="successBox">
     <div class="success-icon">✔</div>
-    <h3>Your login was successful.</h3>
+    <h3>Your login/signup was successful.</h3>
 </div>
 
 <!-- Firebase -->
 <script type="module">
-  // Firebase App
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
     authDomain: "fir-45ded.firebaseapp.com",
     projectId: "fir-45ded",
     storageBucket: "fir-45ded.firebasestorage.app",
     messagingSenderId: "1052838685446",
     appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
-  };
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-  // Email Login
-  window.emailLogin = function() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+// Show Signup/Login
+window.showSignup = function() {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('signupBox').style.display = 'block';
+}
 
-      signInWithEmailAndPassword(auth, email, password)
-      .then(() => showSuccess())
-      .catch((error) => alert(error.message));
-  };
+window.showLogin = function() {
+    document.getElementById('signupBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+}
 
-  // Google Login
-  window.googleLogin = function() {
-      signInWithPopup(auth, provider)
-      .then(() => showSuccess())
-      .catch((error) => alert(error.message));
-  };
+// Email Login
+window.emailLogin = function() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
 
-  function showSuccess() {
-      document.getElementById("loginPage").style.display = "none";
-      document.getElementById("successPage").style.display = "block";
-  }
+    signInWithEmailAndPassword(auth, email, password)
+    .then(() => showSuccess())
+    .catch(error => alert(error.message));
+}
+
+// Email Signup
+window.emailSignup = function() {
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(() => showSuccess())
+    .catch(error => alert(error.message));
+}
+
+// Google Login/Signup
+window.googleLogin = function() {
+    signInWithPopup(auth, provider)
+    .then(() => showSuccess())
+    .catch(error => alert(error.message));
+}
+
+// Show Success
+function showSuccess() {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('signupBox').style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+}
 </script>
 
 </body>
