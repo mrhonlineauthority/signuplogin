@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-box {
+        width: 90%;
+        max-width: 380px;
+        background: #ffffff;
+        padding: 35px 28px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        text-align: center;
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        height: 50px;
+        padding: 0 14px;
+        margin: 12px 0;
+        border: 2px solid #d4d4d4;
+        border-radius: 8px;
+        font-size: 17px;
+        box-sizing: border-box;
+        transition: all .2s;
+    }
+
+    input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        height: 50px;
+        background: #007bff;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        opacity: 0.88;
+        transform: scale(1.02);
+    }
+
+    .google-btn {
+        background: #ffffff;
+        border: 2px solid #dcdcdc;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 17px;
+        margin-top: 18px;
+        border-radius: 8px;
+        height: 50px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .google-btn:hover {
+        background: #f7f7f7;
+        transform: scale(1.02);
+    }
+
+    .google-btn img {
+        width: 24px;
+    }
+
+    .success-box {
+        width: 90%;
+        max-width: 380px;
+        background: #fff;
+        padding: 35px 28px;
+        border-radius: 14px;
+        text-align: center;
+        display: none;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        animation: fadeIn 0.4s ease;
+    }
+
+    .success-icon {
+        font-size: 70px;
+        color: green;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 22px;
+        color: #333;
+        margin-top: 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginPage">
+    <h2>Login</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="emailLogin()">Login</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Login with Google
+    </button>
+</div>
+
+<div class="success-box" id="successPage">
+    <div class="success-icon">✔</div>
+    <h3>Your login was successful.</h3>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  // Firebase App
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
+    authDomain: "fir-45ded.firebaseapp.com",
+    projectId: "fir-45ded",
+    storageBucket: "fir-45ded.firebasestorage.app",
+    messagingSenderId: "1052838685446",
+    appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Email Login
+  window.emailLogin = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+      .then(() => showSuccess())
+      .catch((error) => alert(error.message));
+  };
+
+  // Google Login
+  window.googleLogin = function() {
+      signInWithPopup(auth, provider)
+      .then(() => showSuccess())
+      .catch((error) => alert(error.message));
+  };
+
+  function showSuccess() {
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("successPage").style.display = "block";
+  }
+</script>
+
+</body>
+</html>
