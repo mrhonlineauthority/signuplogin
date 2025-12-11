@@ -19,11 +19,11 @@
 
     .box {
         width: 90%;
-        max-width: 380px;
+        max-width: 320px;
         background: #ffffff;
-        padding: 35px 28px;
+        padding: 25px 20px;
         border-radius: 14px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.12);
         text-align: center;
         animation: fadeIn 0.4s ease;
     }
@@ -34,9 +34,9 @@
     }
 
     h2 {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         color: #333;
-        font-size: 28px;
+        font-size: 26px;
         font-weight: bold;
     }
 
@@ -47,20 +47,17 @@
 
     input {
         width: 100%;
-        height: 50px;
+        height: 48px;
         padding: 0 45px 0 14px;
-        margin: 12px 0;
+        margin: 10px 0;
         border: 2px solid #d4d4d4;
         border-radius: 8px;
-        font-size: 17px;
-        box-sizing: border-box;
+        font-size: 16px;
         transition: all .2s;
+        box-sizing: border-box;
     }
 
-    input:focus {
-        border-color: #007bff;
-        outline: none;
-    }
+    input:focus { border-color: #007bff; }
 
     .eye-icon {
         position: absolute;
@@ -68,29 +65,64 @@
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
-        font-size: 20px;
+        font-size: 18px;
         color: #555;
     }
 
     button {
         width: 100%;
-        height: 50px;
+        height: 48px;
         background: #007bff;
         border: none;
         color: white;
         border-radius: 8px;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: bold;
         cursor: pointer;
-        margin-top: 15px;
+        margin-top: 10px;
         transition: 0.2s;
+        position: relative;
+        overflow: hidden;
     }
 
-    button:hover {
-        opacity: 0.88;
-        transform: scale(1.02);
+    button:hover { opacity: 0.88; }
+
+    /* Button Loader */
+    .btn-loader {
+        border: 3px solid transparent;
+        border-top: 3px solid white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        animation: spin 0.7s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
     }
 
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    button.loading span { visibility: hidden; }
+    button.loading .btn-loader { display: block; }
+
+    /* Forgot Password */
+    .forgot-btn {
+        width: 100%;
+        text-align: left;
+        margin-top: 2px;
+        font-size: 13px;
+        background: none;
+        color: #007bff;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Google Button */
     .google-btn {
         background: #ffffff;
         border: 2px solid #dcdcdc;
@@ -99,21 +131,17 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        font-size: 17px;
-        margin-top: 18px;
+        font-size: 16px;
+        margin-top: 14px;
         border-radius: 8px;
-        height: 50px;
+        height: 48px;
         cursor: pointer;
-        transition: 0.2s;
     }
 
-    .google-btn img {
-        width: 24px;
-        height: 24px;
-    }
+    .google-btn img { width: 22px; }
 
-    .toggle-btn, .forgot-btn {
-        margin-top: 15px;
+    .toggle-btn {
+        margin-top: 10px;
         font-size: 14px;
         background: none;
         color: #007bff;
@@ -121,11 +149,19 @@
         cursor: pointer;
     }
 
+    .password-rules {
+        font-size: 12px;
+        text-align: left;
+        color: #444;
+        margin-top: -4px;
+        margin-bottom: 6px;
+    }
+
     .success-box {
         width: 90%;
-        max-width: 380px;
+        max-width: 320px;
         background: #fff;
-        padding: 35px 28px;
+        padding: 35px 25px;
         border-radius: 14px;
         text-align: center;
         display: none;
@@ -133,16 +169,15 @@
     }
 
     .success-icon {
-        font-size: 70px;
+        font-size: 60px;
         color: green;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
-
 </style>
 </head>
 <body>
 
-<!-- Login Box -->
+<!-- LOGIN -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
 
@@ -155,9 +190,13 @@
         <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
     </div>
 
-    <button onclick="emailLogin()">Login</button>
+    <button class="forgot-btn" onclick="forgotPass()">Forgot Password?</button>
 
-    <button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
+    <!-- Login Button -->
+    <button id="loginBtn" onclick="emailLogin()">
+        <span>Login</span>
+        <div class="btn-loader"></div>
+    </button>
 
     <button class="google-btn" onclick="googleLogin()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
@@ -167,7 +206,7 @@
     <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
 </div>
 
-<!-- Signup Box -->
+<!-- SIGNUP -->
 <div class="box" id="signupBox" style="display:none;">
     <h2>Sign Up</h2>
 
@@ -180,7 +219,18 @@
         <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
     </div>
 
-    <button onclick="emailSignup()">Sign Up</button>
+    <div class="password-rules">
+        ✔ Minimum 8 characters<br>
+        ✔ At least 1 uppercase letter<br>
+        ✔ At least 1 lowercase letter<br>
+        ✔ At least 1 number<br>
+        ✔ At least 1 special character (!@#$%^&*)<br>
+    </div>
+
+    <button id="signupBtn" onclick="emailSignup()">
+        <span>Sign Up</span>
+        <div class="btn-loader"></div>
+    </button>
 
     <button class="google-btn" onclick="googleLogin()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
@@ -190,35 +240,22 @@
     <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
 </div>
 
-<!-- Forgot Password Box -->
-<div class="box" id="forgotBox" style="display:none;">
-    <h2>Reset Password</h2>
-
-    <div class="input-group">
-        <input type="email" id="resetEmail" placeholder="Enter your email">
-    </div>
-
-    <button onclick="resetPassword()">Send Reset Link</button>
-
-    <button class="toggle-btn" onclick="showLogin()">Back to Login</button>
-</div>
-
-<!-- Success Box -->
+<!-- SUCCESS -->
 <div class="success-box" id="successBox">
     <div class="success-icon">✔</div>
     <h3>Your login/signup was successful.</h3>
 </div>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { 
     getAuth,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    GoogleAuthProvider, 
-    signInWithPopup,
-    sendPasswordResetEmail
+    GoogleAuthProvider,
+    sendPasswordResetEmail,
+    signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -234,80 +271,102 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Show Sections
+/* Password Toggle */
+window.togglePassword = function(id, icon){
+    let input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+    icon.textContent = input.type === "text" ? "🙈" : "👁";
+};
+
+/* Password Rules */
+function isStrongPassword(pass){
+    return (
+        /.{8,}/.test(pass) &&
+        /[A-Z]/.test(pass) &&
+        /[a-z]/.test(pass) &&
+        /[0-9]/.test(pass) &&
+        /[!@#$%^&*]/.test(pass)
+    );
+}
+
+/* BUTTON LOADER FUNCTIONS */
+function startLoading(btn){
+    btn.classList.add("loading");
+}
+function stopLoading(btn){
+    btn.classList.remove("loading");
+}
+
+/* Switch Pages */
 window.showSignup = () => {
     loginBox.style.display = "none";
     signupBox.style.display = "block";
-    forgotBox.style.display = "none";
 };
-
 window.showLogin = () => {
     signupBox.style.display = "none";
     loginBox.style.display = "block";
-    forgotBox.style.display = "none";
 };
 
-window.showForgotPassword = () => {
-    loginBox.style.display = "none";
-    signupBox.style.display = "none";
-    forgotBox.style.display = "block";
+/* Forgot Password */
+window.forgotPass = () => {
+    const email = loginEmail.value.trim();
+    if(!email) return alert("Enter your email first!");
+
+    sendPasswordResetEmail(auth, email)
+    .then(() => alert("Password reset link sent to your email."))
+    .catch(err => alert(err.message));
 };
 
-// Reset Password
-window.resetPassword = () => {
-    const email = resetEmail.value;
+/* LOGIN */
+window.emailLogin = () => {
+    startLoading(loginBtn);
 
-    if (!email) {
-        alert("⚠ Please enter your email.");
+    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
+    .then(() => {
+        stopLoading(loginBtn);
+        showSuccess();
+    })
+    .catch(err => {
+        stopLoading(loginBtn);
+        alert(err.message);
+    });
+};
+
+/* SIGNUP */
+window.emailSignup = () => {
+    const pass = signupPassword.value;
+
+    if(!isStrongPassword(pass)){
+        alert("⚠ Follow password rules!");
         return;
     }
 
-    sendPasswordResetEmail(auth, email)
-    .then(() => alert("✔ A password reset link has been sent to your email."))
-    .catch(err => alert(err.message));
+    startLoading(signupBtn);
+
+    createUserWithEmailAndPassword(auth, signupEmail.value, pass)
+    .then(() => {
+        stopLoading(signupBtn);
+        showSuccess();
+    })
+    .catch(err => {
+        stopLoading(signupBtn);
+        alert(err.message);
+    });
 };
 
-// Password Toggle
-window.togglePassword = function(fieldId, icon) {
-    const input = document.getElementById(fieldId);
-    if (input.type === "password") {
-        input.type = "text";
-        icon.textContent = "🙈";
-    } else {
-        input.type = "password";
-        icon.textContent = "👁";
-    }
-};
-
-// Login
-window.emailLogin = () => {
-    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
-
-// Signup
-window.emailSignup = () => {
-    createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
-
-// Google Login
+/* GOOGLE LOGIN */
 window.googleLogin = () => {
     signInWithPopup(auth, provider)
     .then(() => showSuccess())
     .catch(err => alert(err.message));
 };
 
-function showSuccess() {
+function showSuccess(){
     loginBox.style.display = "none";
     signupBox.style.display = "none";
-    forgotBox.style.display = "none";
     successBox.style.display = "block";
 }
-
 </script>
 
 </body>
-  </html>
+</html>
