@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Signup</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .box {
+        width: 90%;
+        max-width: 380px;
+        background: #ffffff;
+        padding: 35px 28px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        text-align: center;
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .input-group {
+        position: relative;
+        width: 100%;
+    }
+
+    input {
+        width: 100%;
+        height: 50px;
+        padding: 0 45px 0 14px;
+        margin: 12px 0;
+        border: 2px solid #d4d4d4;
+        border-radius: 8px;
+        font-size: 17px;
+        box-sizing: border-box;
+        transition: all .2s;
+    }
+
+    input:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    .eye-icon {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+        color: #555;
+    }
+
+    button {
+        width: 100%;
+        height: 50px;
+        background: #007bff;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        opacity: 0.88;
+        transform: scale(1.02);
+    }
+
+    .google-btn {
+        background: #ffffff;
+        border: 2px solid #dcdcdc;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 17px;
+        margin-top: 18px;
+        border-radius: 8px;
+        height: 50px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .google-btn img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .toggle-btn, .forgot-btn {
+        margin-top: 15px;
+        font-size: 14px;
+        background: none;
+        color: #007bff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .success-box {
+        width: 90%;
+        max-width: 380px;
+        background: #fff;
+        padding: 35px 28px;
+        border-radius: 14px;
+        text-align: center;
+        display: none;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .success-icon {
+        font-size: 70px;
+        color: green;
+        margin-bottom: 20px;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- Login Box -->
+<div class="box" id="loginBox">
+    <h2>Login</h2>
+
+    <div class="input-group">
+        <input type="email" id="loginEmail" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
+    </div>
+
+    <button onclick="emailLogin()">Login</button>
+
+    <button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Login with Google
+    </button>
+
+    <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
+</div>
+
+<!-- Signup Box -->
+<div class="box" id="signupBox" style="display:none;">
+    <h2>Sign Up</h2>
+
+    <div class="input-group">
+        <input type="email" id="signupEmail" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
+    </div>
+
+    <button onclick="emailSignup()">Sign Up</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Sign Up with Google
+    </button>
+
+    <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
+</div>
+
+<!-- Forgot Password Box -->
+<div class="box" id="forgotBox" style="display:none;">
+    <h2>Reset Password</h2>
+
+    <div class="input-group">
+        <input type="email" id="resetEmail" placeholder="Enter your email">
+    </div>
+
+    <button onclick="resetPassword()">Send Reset Link</button>
+
+    <button class="toggle-btn" onclick="showLogin()">Back to Login</button>
+</div>
+
+<!-- Success Box -->
+<div class="success-box" id="successBox">
+    <div class="success-icon">✔</div>
+    <h3>Your login/signup was successful.</h3>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { 
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider, 
+    signInWithPopup,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
+    authDomain: "fir-45ded.firebaseapp.com",
+    projectId: "fir-45ded",
+    storageBucket: "fir-45ded.firebasestorage.app",
+    messagingSenderId: "1052838685446",
+    appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Show Sections
+window.showSignup = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "block";
+    forgotBox.style.display = "none";
+};
+
+window.showLogin = () => {
+    signupBox.style.display = "none";
+    loginBox.style.display = "block";
+    forgotBox.style.display = "none";
+};
+
+window.showForgotPassword = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "block";
+};
+
+// Reset Password
+window.resetPassword = () => {
+    const email = resetEmail.value;
+
+    if (!email) {
+        alert("⚠ Please enter your email.");
+        return;
+    }
+
+    sendPasswordResetEmail(auth, email)
+    .then(() => alert("✔ A password reset link has been sent to your email."))
+    .catch(err => alert(err.message));
+};
+
+// Password Toggle
+window.togglePassword = function(fieldId, icon) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+    } else {
+        input.type = "password";
+        icon.textContent = "👁";
+    }
+};
+
+// Login
+window.emailLogin = () => {
+    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+// Signup
+window.emailSignup = () => {
+    createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+// Google Login
+window.googleLogin = () => {
+    signInWithPopup(auth, provider)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+function showSuccess() {
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "none";
+    successBox.style.display = "block";
+}
+
+</script>
+
+</body>
+  </html>
