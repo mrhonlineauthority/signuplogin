@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login & Signup</title>
+
 <style>
     body {
         margin: 0;
@@ -39,10 +40,15 @@
         font-weight: bold;
     }
 
+    .input-group {
+        position: relative;
+        width: 100%;
+    }
+
     input {
         width: 100%;
         height: 50px;
-        padding: 0 14px;
+        padding: 0 45px 0 14px;
         margin: 12px 0;
         border: 2px solid #d4d4d4;
         border-radius: 8px;
@@ -53,8 +59,17 @@
 
     input:focus {
         border-color: #007bff;
-        box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
         outline: none;
+    }
+
+    .eye-icon {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+        color: #555;
     }
 
     button {
@@ -93,12 +108,8 @@
     }
 
     .google-btn img {
-        width: 24px;
-    }
-
-    .google-btn:hover {
-        background: #f7f7f7;
-        transform: scale(1.02);
+        width: 24px;      /* FIXED → Small icon restored */
+        height: 24px;
     }
 
     .toggle-btn {
@@ -108,6 +119,14 @@
         color: #007bff;
         border: none;
         cursor: pointer;
+    }
+
+    .password-rules {
+        font-size: 13px;
+        text-align: left;
+        color: #444;
+        margin-top: -5px;
+        margin-bottom: 10px;
     }
 
     .success-box {
@@ -126,12 +145,6 @@
         color: green;
         margin-bottom: 20px;
     }
-
-    h3 {
-        font-size: 22px;
-        color: #333;
-        margin-top: 0;
-    }
 </style>
 </head>
 <body>
@@ -139,8 +152,16 @@
 <!-- Login Box -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPassword" placeholder="Password">
+
+    <div class="input-group">
+        <input type="email" id="loginEmail" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
+    </div>
+
     <button onclick="emailLogin()">Login</button>
 
     <button class="google-btn" onclick="googleLogin()">
@@ -154,8 +175,24 @@
 <!-- Signup Box -->
 <div class="box" id="signupBox" style="display:none;">
     <h2>Sign Up</h2>
-    <input type="email" id="signupEmail" placeholder="Email">
-    <input type="password" id="signupPassword" placeholder="Password">
+
+    <div class="input-group">
+        <input type="email" id="signupEmail" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
+    </div>
+
+    <div class="password-rules">
+        ✔ Minimum 8 characters<br>
+        ✔ At least 1 uppercase letter (A–Z)<br>
+        ✔ At least 1 lowercase letter (a–z)<br>
+        ✔ At least 1 number (0–9)<br>
+        ✔ At least 1 special character (!@#$%^&*)<br>
+    </div>
+
     <button onclick="emailSignup()">Sign Up</button>
 
     <button class="google-btn" onclick="googleLogin()">
@@ -172,10 +209,11 @@
     <h3>Your login/signup was successful.</h3>
 </div>
 
-<!-- Firebase -->
+<!-- Firebase Scripts -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
@@ -190,49 +228,74 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Show Signup/Login
-window.showSignup = function() {
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('signupBox').style.display = 'block';
+// Show/Hide Password
+window.togglePassword = function(fieldId, icon) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+    } else {
+        input.type = "password";
+        icon.textContent = "👁";
+    }
+};
+
+// Password Strength Checker
+function isStrongPassword(pass) {
+    const rules = [
+        /.{8,}/,
+        /[A-Z]/,
+        /[a-z]/,
+        /[0-9]/,
+        /[!@#$%^&*]/
+    ];
+    return rules.every(rule => rule.test(pass));
 }
 
-window.showLogin = function() {
-    document.getElementById('signupBox').style.display = 'none';
-    document.getElementById('loginBox').style.display = 'block';
-}
+// Show Signup/Login
+window.showSignup = () => {
+    loginBox.style.display = 'none';
+    signupBox.style.display = 'block';
+};
+
+window.showLogin = () => {
+    signupBox.style.display = 'none';
+    loginBox.style.display = 'block';
+};
 
 // Email Login
-window.emailLogin = function() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    signInWithEmailAndPassword(auth, email, password)
+window.emailLogin = () => {
+    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
     .then(() => showSuccess())
-    .catch(error => alert(error.message));
-}
+    .catch(err => alert(err.message));
+};
 
 // Email Signup
-window.emailSignup = function() {
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
+window.emailSignup = () => {
+    const password = signupPassword.value;
 
-    createUserWithEmailAndPassword(auth, email, password)
+    if (!isStrongPassword(password)) {
+        alert("⚠ Your password is not strong enough. Follow the rules above.");
+        return;
+    }
+
+    createUserWithEmailAndPassword(auth, signupEmail.value, password)
     .then(() => showSuccess())
-    .catch(error => alert(error.message));
-}
+    .catch(err => alert(err.message));
+};
 
-// Google Login/Signup
-window.googleLogin = function() {
+// Google Login
+window.googleLogin = () => {
     signInWithPopup(auth, provider)
     .then(() => showSuccess())
-    .catch(error => alert(error.message));
-}
+    .catch(err => alert(err.message));
+};
 
-// Show Success
+// Success Screen
 function showSuccess() {
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('signupBox').style.display = 'none';
-    document.getElementById('successBox').style.display = 'block';
+    loginBox.style.display = 'none';
+    signupBox.style.display = 'none';
+    successBox.style.display = 'block';
 }
 </script>
 
