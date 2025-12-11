@@ -6,145 +6,178 @@
 <title>Login & Signup</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #f1f1f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-    .box {
-        width: 90%;
-        max-width: 380px;
-        background: #ffffff;
-        padding: 35px 28px;
-        border-radius: 14px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        text-align: center;
-        animation: fadeIn 0.4s ease;
-    }
+.box {
+    width: 90%;
+    max-width: 380px;
+    background: #ffffff;
+    padding: 17px 13px;
+    border-radius: 14px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to   { opacity: 1; transform: scale(1); }
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
 
-    h2 {
-        margin-bottom: 20px;
-        color: #333;
-        font-size: 28px;
-        font-weight: bold;
-    }
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+}
 
-    .input-group {
-        position: relative;
-        width: 100%;
-    }
+.input-group {
+    position: relative;
+    width: 100%;
+}
 
-    input {
-        width: 100%;
-        height: 50px;
-        padding: 0 45px 0 14px;
-        margin: 12px 0;
-        border: 2px solid #d4d4d4;
-        border-radius: 8px;
-        font-size: 17px;
-        box-sizing: border-box;
-        transition: all .2s;
-    }
+input {
+    width: 100%;
+    height: 50px;
+    padding: 0 45px 0 14px;
+    margin: 12px 0;
+    border: 2px solid #d4d4d4;
+    border-radius: 8px;
+    font-size: 17px;
+    box-sizing: border-box;
+    transition: all .2s;
+}
 
-    input:focus {
-        border-color: #007bff;
-        outline: none;
-    }
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
 
-    .eye-icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-        color: #555;
-    }
+.eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+}
 
-    button {
-        width: 100%;
-        height: 50px;
-        background: #007bff;
-        border: none;
-        color: white;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 15px;
-        transition: 0.2s;
-    }
+/* Login / Signup buttons */
+button {
+    width: 100%;
+    height: 50px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;  /* Forgot Password button এর সাথে gap কমানো */
+    transition: 0.2s;
+}
 
-    button:hover {
-        opacity: 0.88;
-        transform: scale(1.02);
-    }
+button:hover {
+    opacity: 0.88;
+    transform: scale(1.02);
+}
 
-    .google-btn {
-        background: #ffffff;
-        border: 2px solid #dcdcdc;
-        color: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        font-size: 17px;
-        margin-top: 18px;
-        border-radius: 8px;
-        height: 50px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+/* Google button */
+.google-btn {
+    background: #ffffff;
+    border: 2px solid #dcdcdc;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 17px;
+    margin-top: 18px;
+    border-radius: 8px;
+    height: 50px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-    .google-btn img {
-        width: 24px;      /* FIXED → Small icon restored */
-        height: 24px;
-    }
+.google-btn img {
+    width: 24px;
+    height: 24px;
+}
 
-    .toggle-btn {
-        margin-top: 15px;
-        font-size: 14px;
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-    }
+/* Toggle link */
+.toggle-btn {
+    margin-top: 15px;
+    font-size: 14px;
+    background: none;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}
 
-    .password-rules {
-        font-size: 13px;
-        text-align: left;
-        color: #444;
-        margin-top: -5px;
-        margin-bottom: 10px;
-    }
+/* Forgot Password button - left aligned & ultra compact */
+.forgot-btn {
+    display: block;          /* left-align */
+    text-align: left;        /* বাম পাশে লেখা */
+    margin: 0;               /* উপরের এবং নিচের margin remove */
+    padding: 0;              /* padding remove */
+    font-size: 13px;         /* একটু ছোট করে compact */
+    background: none;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}
 
-    .success-box {
-        width: 90%;
-        max-width: 380px;
-        background: #fff;
-        padding: 35px 28px;
-        border-radius: 14px;
-        text-align: center;
-        display: none;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
+/* Login button - compact spacing */
+button {
+    width: 100%;
+    height: 45px;           /* height একটু কমানো */
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 2px;        /* Forgot Password button এর সাথে gap সর্বনিম্ন */
+    transition: 0.2s;
+}
 
-    .success-icon {
-        font-size: 70px;
-        color: green;
-        margin-bottom: 20px;
-    }
+/* Password rules text (Signup page) */
+.password-rules {
+    font-size: 13px;
+    text-align: left;
+    color: #444;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+/* Success box */
+.success-box {
+    width: 90%;
+    max-width: 380px;
+    background: #fff;
+    padding: 35px 28px;
+    border-radius: 14px;
+    text-align: center;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.success-icon {
+    font-size: 70px;
+    color: green;
+    margin-bottom: 20px;
+}
 </style>
 </head>
 <body>
@@ -161,6 +194,9 @@
         <input type="password" id="loginPassword" placeholder="Password">
         <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
     </div>
+
+    <!-- Forgot Password button moved below password field -->
+    <button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
 
     <button onclick="emailLogin()">Login</button>
 
@@ -185,7 +221,7 @@
         <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
     </div>
 
-    <div class="password-rules">
+    <div class="password-rules" id="passwordRules">
         ✔ Minimum 8 characters<br>
         ✔ At least 1 uppercase letter (A–Z)<br>
         ✔ At least 1 lowercase letter (a–z)<br>
@@ -203,6 +239,19 @@
     <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
 </div>
 
+<!-- Forgot Password Box -->
+<div class="box" id="forgotBox" style="display:none;">
+    <h2>Reset Password</h2>
+
+    <div class="input-group">
+        <input type="email" id="resetEmail" placeholder="Enter your email">
+    </div>
+
+    <button onclick="resetPassword()">Send Reset Link</button>
+
+    <button class="toggle-btn" onclick="showLogin()">Back to Login</button>
+</div>
+
 <!-- Success Box -->
 <div class="success-box" id="successBox">
     <div class="success-icon">✔</div>
@@ -212,8 +261,14 @@
 <!-- Firebase Scripts -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider, 
+    signInWithPopup,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
@@ -228,7 +283,38 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Show/Hide Password
+// Show Sections
+window.showSignup = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "block";
+    forgotBox.style.display = "none";
+};
+
+window.showLogin = () => {
+    signupBox.style.display = "none";
+    loginBox.style.display = "block";
+    forgotBox.style.display = "none";
+};
+
+window.showForgotPassword = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "block";
+};
+
+// Reset Password
+window.resetPassword = () => {
+    const email = resetEmail.value.trim();
+    if (!email) {
+        alert("⚠ Please enter your email.");
+        return;
+    }
+    sendPasswordResetEmail(auth, email)
+    .then(() => alert("✔ A password reset link has been sent to your email."))
+    .catch(err => alert(err.message));
+};
+
+// Password Toggle
 window.togglePassword = function(fieldId, icon) {
     const input = document.getElementById(fieldId);
     if (input.type === "password") {
@@ -243,43 +329,41 @@ window.togglePassword = function(fieldId, icon) {
 // Password Strength Checker
 function isStrongPassword(pass) {
     const rules = [
-        /.{8,}/,
-        /[A-Z]/,
-        /[a-z]/,
-        /[0-9]/,
-        /[!@#$%^&*]/
+        /.{8,}/,       // Minimum 8 characters
+        /[A-Z]/,       // At least 1 uppercase
+        /[a-z]/,       // At least 1 lowercase
+        /[0-9]/,       // At least 1 number
+        /[!@#$%^&*]/   // At least 1 special character
     ];
     return rules.every(rule => rule.test(pass));
 }
 
-// Show Signup/Login
-window.showSignup = () => {
-    loginBox.style.display = 'none';
-    signupBox.style.display = 'block';
-};
+// Sign Up
+window.emailSignup = () => {
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value;
 
-window.showLogin = () => {
-    signupBox.style.display = 'none';
-    loginBox.style.display = 'block';
-};
+    if (!email) {
+        alert("⚠ Please enter your email.");
+        return;
+    }
+    if (!password) {
+        alert("⚠ Please enter your password.");
+        return;
+    }
+    if (!isStrongPassword(password)) {
+        alert("⚠ Your password is not strong enough!\n\nFollow these rules:\n- Minimum 8 characters\n- At least 1 uppercase letter\n- At least 1 lowercase letter\n- At least 1 number\n- At least 1 special character (!@#$%^&*)");
+        return;
+    }
 
-// Email Login
-window.emailLogin = () => {
-    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
+    createUserWithEmailAndPassword(auth, email, password)
     .then(() => showSuccess())
     .catch(err => alert(err.message));
 };
 
-// Email Signup
-window.emailSignup = () => {
-    const password = signupPassword.value;
-
-    if (!isStrongPassword(password)) {
-        alert("⚠ Your password is not strong enough. Follow the rules above.");
-        return;
-    }
-
-    createUserWithEmailAndPassword(auth, signupEmail.value, password)
+// Login
+window.emailLogin = () => {
+    signInWithEmailAndPassword(auth, loginEmail.value.trim(), loginPassword.value)
     .then(() => showSuccess())
     .catch(err => alert(err.message));
 };
@@ -291,11 +375,12 @@ window.googleLogin = () => {
     .catch(err => alert(err.message));
 };
 
-// Success Screen
+// Success Box
 function showSuccess() {
-    loginBox.style.display = 'none';
-    signupBox.style.display = 'none';
-    successBox.style.display = 'block';
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "none";
+    successBox.style.display = "block";
 }
 </script>
 
