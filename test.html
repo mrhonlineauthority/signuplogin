@@ -6,219 +6,253 @@
 <title>Login & Signup</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #f1f1f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-    .box {
-        width: 90%;
-        max-width: 320px;
-        background: #ffffff;
-        padding: 25px 20px;
-        border-radius: 14px;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-        text-align: center;
-        animation: fadeIn 0.4s ease;
-    }
+/* Boxes */
+.box, .profile-box {
+    width: 90%;
+    max-width: 320px;
+    background: #ffffff;
+    padding: 25px 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to   { opacity: 1; transform: scale(1); }
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
 
-    h2 {
-        margin-bottom: 18px;
-        color: #333;
-        font-size: 26px;
-        font-weight: bold;
-    }
+h2, h3 {
+    margin-bottom: 18px;
+    color: #333;
+    font-size: 26px;
+    font-weight: bold;
+}
 
-    .input-group {
-        position: relative;
-        width: 100%;
-    }
+.input-group {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
 
-    input {
-        width: 100%;
-        height: 48px;
-        padding: 0 45px 0 14px;
-        margin: 10px 0;
-        border: 2px solid #d4d4d4;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: all .2s;
-        box-sizing: border-box;
-    }
+input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px 0 40px; /* Left padding for icon */
+    border: 2px solid #d4d4d4;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all .2s;
+    box-sizing: border-box;
+}
 
-    input:focus { border-color: #007bff; }
+input:focus { border-color: #007bff; }
 
-    .eye-icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 18px;
-        color: #555;
-    }
+/* Input icons */
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+}
+.input-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #888;
+}
 
-    button {
-        width: 100%;
-        height: 48px;
-        background: #007bff;
-        border: none;
-        color: white;
-        border-radius: 8px;
-        font-size: 17px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
-        position: relative;
-        overflow: hidden;
-    }
+.eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+}
 
-    button:hover { opacity: 0.88; }
+/* Buttons */
+button {
+    width: 100%;
+    height: 48px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+button:hover { opacity: 0.88; }
 
-    /* Button Loader */
-    .btn-loader {
-        border: 3px solid transparent;
-        border-top: 3px solid white;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        animation: spin 0.7s linear infinite;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: none;
-    }
+/* Button Loader */
+.btn-loader {
+    border: 3px solid transparent;
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    animation: spin 0.7s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+button.loading span { visibility: hidden; }
+button.loading .btn-loader { display: block; }
 
-    @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+.forgot-btn {
+    width: 100%;
+    text-align: left;
+    margin-top: 2px;
+    font-size: 13px;
+    background: none;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}
 
-    button.loading span { visibility: hidden; }
-    button.loading .btn-loader { display: block; }
+.google-btn {
+    background: #ffffff;
+    border: 2px solid #dcdcdc;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 16px;
+    margin-top: 14px;
+    border-radius: 8px;
+    height: 48px;
+    cursor: pointer;
+}
+.google-btn img { width: 22px; }
 
-    /* Forgot Password */
-    .forgot-btn {
-        width: 100%;
-        text-align: left;
-        margin-top: 2px;
-        font-size: 13px;
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-    }
+.password-rules {
+    font-size: 12px;
+    text-align: left;
+    color: #444;
+    margin-top: -4px;
+    margin-bottom: 6px;
+}
 
-    /* Google Button */
-    .google-btn {
-        background: #ffffff;
-        border: 2px solid #dcdcdc;
-        color: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        font-size: 16px;
-        margin-top: 14px;
-        border-radius: 8px;
-        height: 48px;
-        cursor: pointer;
-    }
+/* Profile Box */
+.profile-box {
+    display: none;
+    padding: 35px 25px;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    text-align: center;
+}
 
-    .google-btn img { width: 22px; }
+.profile-icon {
+    font-size: 60px;
+    color: #007bff;
+    margin-bottom: 15px;
+}
 
-    .toggle-btn {
-        margin-top: 10px;
-        font-size: 14px;
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-    }
+#userEmail {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
 
-    .password-rules {
-        font-size: 12px;
-        text-align: left;
-        color: #444;
-        margin-top: -4px;
-        margin-bottom: 6px;
-    }
+.profile-box p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #555;
+}
 
-    .success-box {
-        width: 90%;
-        max-width: 320px;
-        background: #fff;
-        padding: 35px 25px;
-        border-radius: 14px;
-        text-align: center;
-        display: none;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
+.profile-box button {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.profile-create-btn { background: #28a745; }
+.profile-logout-btn { background: #007bff; }
 
-    .success-icon {
-        font-size: 60px;
-        color: green;
-        margin-bottom: 15px;
-    }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN BOX -->
 <div class="box" id="loginBox">
     <h2>Login</h2>
-
     <div class="input-group">
+        <span class="input-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path></svg>
+        </span>
         <input type="email" id="loginEmail" placeholder="Email">
     </div>
-
     <div class="input-group">
+        <span class="input-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path></svg>
+        </span>
         <input type="password" id="loginPassword" placeholder="Password">
         <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
     </div>
-
     <button class="forgot-btn" onclick="forgotPass()">Forgot Password?</button>
-
-    <!-- Login Button -->
     <button id="loginBtn" onclick="emailLogin()">
         <span>Login</span>
         <div class="btn-loader"></div>
     </button>
-
     <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Login with Google
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Login with Google
     </button>
-
-    <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
+    <div style="margin-top:10px; font-size:14px;">
+        <span>Don't have an account? </span>
+        <span style="color:#007bff; cursor:pointer;" onclick="showSignup()">Sign Up</span>
+    </div>
 </div>
 
-<!-- SIGNUP -->
+<!-- SIGNUP BOX -->
 <div class="box" id="signupBox" style="display:none;">
     <h2>Sign Up</h2>
-
     <div class="input-group">
+        <span class="input-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path></svg>
+        </span>
         <input type="email" id="signupEmail" placeholder="Email">
     </div>
-
     <div class="input-group">
+        <span class="input-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path></svg>
+        </span>
         <input type="password" id="signupPassword" placeholder="Password">
         <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
     </div>
-
     <div class="password-rules">
         ✔ Minimum 8 characters<br>
         ✔ At least 1 uppercase letter<br>
@@ -226,37 +260,31 @@
         ✔ At least 1 number<br>
         ✔ At least 1 special character (!@#$%^&*)<br>
     </div>
-
     <button id="signupBtn" onclick="emailSignup()">
         <span>Sign Up</span>
         <div class="btn-loader"></div>
     </button>
-
     <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Sign Up with Google
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Sign Up with Google
     </button>
-
-    <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
+    <div style="margin-top:10px; font-size:14px;">
+        <span>Already have an account? </span>
+        <span style="color:#007bff; cursor:pointer;" onclick="showLogin()">Login</span>
+    </div>
 </div>
 
-<!-- SUCCESS -->
-<div class="success-box" id="successBox">
-    <div class="success-icon">✔</div>
-    <h3>Your login/signup was successful.</h3>
+<!-- PROFILE BOX -->
+<div class="profile-box" id="profileBox">
+    <div class="profile-icon">👤</div>
+    <h3 id="userEmail">user@example.com</h3>
+    <p>Your signup/login is complete! Now create your profile.</p>
+    <button class="profile-create-btn" onclick="window.open('https://mrhonlineauthority.github.io/signuplogin/idsignuplogin.html', '_blank')">Profile Create</button>
+    <button class="profile-logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { 
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    sendPasswordResetEmail,
-    signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
@@ -280,92 +308,71 @@ window.togglePassword = function(id, icon){
 
 /* Password Rules */
 function isStrongPassword(pass){
-    return (
-        /.{8,}/.test(pass) &&
-        /[A-Z]/.test(pass) &&
-        /[a-z]/.test(pass) &&
-        /[0-9]/.test(pass) &&
-        /[!@#$%^&*]/.test(pass)
-    );
+    return (/.{8,}/.test(pass) && /[A-Z]/.test(pass) && /[a-z]/.test(pass) && /[0-9]/.test(pass) && /[!@#$%^&*]/.test(pass));
 }
 
-/* BUTTON LOADER FUNCTIONS */
-function startLoading(btn){
-    btn.classList.add("loading");
-}
-function stopLoading(btn){
-    btn.classList.remove("loading");
-}
+/* BUTTON LOADER */
+function startLoading(btn){ btn.classList.add("loading"); }
+function stopLoading(btn){ btn.classList.remove("loading"); }
 
 /* Switch Pages */
-window.showSignup = () => {
-    loginBox.style.display = "none";
-    signupBox.style.display = "block";
-};
-window.showLogin = () => {
-    signupBox.style.display = "none";
-    loginBox.style.display = "block";
-};
+window.showSignup = () => { loginBox.style.display="none"; signupBox.style.display="block"; };
+window.showLogin = () => { signupBox.style.display="none"; loginBox.style.display="block"; };
 
 /* Forgot Password */
 window.forgotPass = () => {
     const email = loginEmail.value.trim();
     if(!email) return alert("Enter your email first!");
-
-    sendPasswordResetEmail(auth, email)
-    .then(() => alert("Password reset link sent to your email."))
-    .catch(err => alert(err.message));
+    sendPasswordResetEmail(auth, email).then(()=>alert("Password reset link sent your Email.")).catch(err=>alert(err.message));
 };
 
 /* LOGIN */
 window.emailLogin = () => {
     startLoading(loginBtn);
-
     signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
-    .then(() => {
-        stopLoading(loginBtn);
-        showSuccess();
-    })
-    .catch(err => {
-        stopLoading(loginBtn);
-        alert(err.message);
-    });
+    .then(()=>{ stopLoading(loginBtn); showProfile(); })
+    .catch(err=>{ stopLoading(loginBtn); alert(err.message); });
 };
 
 /* SIGNUP */
 window.emailSignup = () => {
     const pass = signupPassword.value;
-
-    if(!isStrongPassword(pass)){
-        alert("⚠ Follow password rules!");
-        return;
-    }
-
+    if(!isStrongPassword(pass)){ alert("⚠ Follow password rules!"); return; }
     startLoading(signupBtn);
-
     createUserWithEmailAndPassword(auth, signupEmail.value, pass)
-    .then(() => {
-        stopLoading(signupBtn);
-        showSuccess();
-    })
-    .catch(err => {
-        stopLoading(signupBtn);
-        alert(err.message);
-    });
+    .then(()=>{ stopLoading(signupBtn); showProfile(); })
+    .catch(err=>{ stopLoading(signupBtn); alert(err.message); });
 };
 
 /* GOOGLE LOGIN */
 window.googleLogin = () => {
-    signInWithPopup(auth, provider)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
+    signInWithPopup(auth, provider).then(()=>showProfile()).catch(err=>alert(err.message));
 };
 
-function showSuccess(){
-    loginBox.style.display = "none";
-    signupBox.style.display = "none";
-    successBox.style.display = "block";
+/* SHOW PROFILE */
+function showProfile(){
+    const user = auth.currentUser;
+    if(user){
+        loginBox.style.display="none";
+        signupBox.style.display="none";
+        profileBox.style.display="block";
+        userEmail.textContent = user.email || "No Email";
+    }
 }
+
+/* LOGOUT */
+window.logout = () => {
+    signOut(auth).then(()=>{
+        profileBox.style.display="none";
+        loginBox.style.display="block";
+    });
+};
+
+/* Auto-login if already signed in */
+onAuthStateChanged(auth, (user)=>{
+    if(user){ showProfile(); }
+    else { loginBox.style.display="block"; signupBox.style.display="none"; profileBox.style.display="none"; }
+});
 </script>
 
 </body>
