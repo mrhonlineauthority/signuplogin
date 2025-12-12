@@ -43,13 +43,13 @@
     .input-group {
         position: relative;
         width: 100%;
+        margin: 10px 0;
     }
 
     input {
         width: 100%;
         height: 48px;
-        padding: 0 45px 0 14px;
-        margin: 10px 0;
+        padding: 0 14px 0 40px;
         border: 2px solid #d4d4d4;
         border-radius: 8px;
         font-size: 16px;
@@ -110,7 +110,6 @@
     button.loading span { visibility: hidden; }
     button.loading .btn-loader { display: block; }
 
-    /* Forgot Password */
     .forgot-btn {
         width: 100%;
         text-align: left;
@@ -122,7 +121,6 @@
         cursor: pointer;
     }
 
-    /* Google Button */
     .google-btn {
         background: #ffffff;
         border: 2px solid #dcdcdc;
@@ -172,6 +170,25 @@
         color: green;
         margin-bottom: 15px;
     }
+
+    /* Input Icons */
+    .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .input-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: #888;
+    }
 </style>
 </head>
 <body>
@@ -181,17 +198,26 @@
     <h2>Login</h2>
 
     <div class="input-group">
+        <span class="input-icon email-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path>
+            </svg>
+        </span>
         <input type="email" id="loginEmail" placeholder="Email">
     </div>
 
     <div class="input-group">
+        <span class="input-icon password-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path>
+            </svg>
+        </span>
         <input type="password" id="loginPassword" placeholder="Password">
         <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
     </div>
 
     <button class="forgot-btn" onclick="forgotPass()">Forgot Password?</button>
 
-    <!-- Login Button -->
     <button id="loginBtn" onclick="emailLogin()">
         <span>Login</span>
         <div class="btn-loader"></div>
@@ -202,11 +228,10 @@
         Login with Google
     </button>
 
-    <!-- Updated Toggle (One line) -->
-<div style="margin-top: 10px; font-size: 14px; text-align:center;">
-    <span style="color:#000;">Don't have an account? </span>
-    <span onclick="showSignup()" style="color:#007bff; cursor:pointer; text-decoration:none;">Sign Up</span>
-  </div>
+    <div style="margin-top: 10px; font-size: 14px; text-align:center;">
+        <span style="color: #000;">Don't have an account? </span>
+        <span onclick="showSignup()" style="color:#007bff; cursor:pointer;">Sign Up</span>
+    </div>
 </div>
 
 <!-- SIGNUP -->
@@ -214,10 +239,20 @@
     <h2>Sign Up</h2>
 
     <div class="input-group">
+        <span class="input-icon email-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path>
+            </svg>
+        </span>
         <input type="email" id="signupEmail" placeholder="Email">
     </div>
 
     <div class="input-group">
+        <span class="input-icon password-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path>
+            </svg>
+        </span>
         <input type="password" id="signupPassword" placeholder="Password">
         <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
     </div>
@@ -240,11 +275,10 @@
         Sign Up with Google
     </button>
 
-    <!-- Updated Toggle (One line) -->
-<div style="margin-top: 10px; font-size: 14px; text-align:center;">
-    <span style="color:#000;">Already have an account? </span>
-    <span onclick="showLogin()" style="color:#007bff; cursor:pointer; text-decoration:none;">Login</span>
-  </div>
+    <div style="margin-top: 10px; font-size: 14px; text-align:center;">
+        <span style="color: #000;">Already have an account? </span>
+        <span onclick="showLogin()" style="color:#007bff; cursor:pointer;">Login</span>
+    </div>
 </div>
 
 <!-- SUCCESS -->
@@ -253,7 +287,6 @@
     <h3>Your login/signup was successful.</h3>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { 
