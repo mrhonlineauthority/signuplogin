@@ -62,7 +62,7 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
       <line id="signupSlash" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" style="display:none"/>
     </svg>
   </div>
-  <!-- Password Rules -->
+
   <div id="passwordRules">
     Password must contain:
     <ul>
@@ -113,7 +113,6 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
     </svg>
   </div>
 
-  <!-- Profile Icon SVG -->
   <svg id="profileIcon" xmlns="http://www.w3.org/2000/svg" fill="gray" viewBox="0 0 24 24">
     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.2c-3.1 0-9.3 1.6-9.3 4.9v2.4h18.6v-2.4c0-3.3-6.2-4.9-9.3-4.9z"/>
   </svg>
@@ -122,9 +121,9 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
     <table class="table table-bordered table-sm mb-3">
       <tbody>
         <tr>
-          <th style="width:30%;">Full Name</th>
+          <th style="width:25%;">Full Name</th>
           <td id="tdFullName"></td>
-          <td style="width:20%;"><button class="btn btn-sm btn-primary editBtn" data-field="fullName">Edit</button></td>
+          <td style="width:15%;"><button class="btn btn-sm btn-primary editBtn" data-field="fullName">Edit</button></td>
         </tr>
         <tr>
           <th>Username</th>
@@ -139,6 +138,11 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
         <tr>
           <th>Email</th>
           <td id="tdEmail"></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <th>Profile Status</th>
+          <td id="tdProfileStatus"></td>
           <td>—</td>
         </tr>
       </tbody>
@@ -181,23 +185,14 @@ const tdFullName = document.getElementById('tdFullName');
 const tdUsername = document.getElementById('tdUsername');
 const tdPhone = document.getElementById('tdPhone');
 const tdEmail = document.getElementById('tdEmail');
+const tdProfileStatus = document.getElementById('tdProfileStatus');
 
-// Show login/signup
 showLoginLink.addEventListener('click', () => { signupDiv.classList.add('hidden'); loginDiv.classList.remove('hidden'); });
 backSignupLink.addEventListener('click', () => { loginDiv.classList.add('hidden'); signupDiv.classList.remove('hidden'); });
 
-// Loader functions
-function showLoader(button){
-  button.disabled = true;
-  button.dataset.originalText = button.innerHTML;
-  button.innerHTML = '<span class="loader"></span>';
-}
-function hideLoader(button){
-  button.disabled = false;
-  button.innerHTML = button.dataset.originalText;
-}
+function showLoader(button){ button.disabled=true; button.dataset.originalText=button.innerHTML; button.innerHTML='<span class="loader"></span>'; }
+function hideLoader(button){ button.disabled=false; button.innerHTML=button.dataset.originalText; }
 
-// Signup
 signupBtn.addEventListener('click', () => {
   const fullName = document.getElementById('fullName').value.trim();
   const username = document.getElementById('username').value.trim();
@@ -205,123 +200,81 @@ signupBtn.addEventListener('click', () => {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
-  if(!fullName || !username || !phone || !email || !password){
-    alert("Please fill in all required fields.");
-    return;
-  }
+  if(!fullName || !username || !phone || !email || !password){ alert("Please fill in all required fields."); return; }
 
   const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-  if(!strongPasswordRegex.test(password)){
-    alert("Password is not strong enough. Please follow the password rules.");
-    return;
-  }
+  if(!strongPasswordRegex.test(password)){ alert("Password is not strong enough."); return; }
 
   showLoader(signupBtn);
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(userCredential => {
-      const uid = userCredential.user.uid;
-      set(ref(db, 'users/' + uid), { fullName, username, phone, email, status: 'pending', rating:0 })
-        .then(() => { 
-          alert('Signup successful! Wait for admin approval.');
-          hideLoader(signupBtn);
-        });
-    })
-    .catch(error => { 
-      alert(error.message);
+  createUserWithEmailAndPassword(auth,email,password).then(userCredential=>{
+    const uid=userCredential.user.uid;
+    set(ref(db,'users/'+uid),{fullName,username,phone,email,status:'pending',rating:0,profileStatus:'New'}).then(()=>{
+      alert('Signup successful! Wait for admin approval.');
       hideLoader(signupBtn);
     });
+  }).catch(error=>{ alert(error.message); hideLoader(signupBtn); });
 });
 
-// Login
-loginBtn.addEventListener('click', () => {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPass').value;
-
+loginBtn.addEventListener('click', ()=>{
+  const email=document.getElementById('loginEmail').value;
+  const password=document.getElementById('loginPass').value;
   showLoader(loginBtn);
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then(userCredential => {
-      const uid = userCredential.user.uid;
-      get(ref(db, 'users/' + uid)).then(snapshot => {
-        if(snapshot.exists() && snapshot.val().status === 'approved') {
-          const user = snapshot.val();
-          tdFullName.innerText = user.fullName;
-          tdUsername.innerText = user.username;
-          tdPhone.innerText = user.phone;
-          tdEmail.innerText = user.email;
-          profileDiv.dataset.uid = uid;
-          profileDiv.classList.remove('hidden');
-          loginDiv.classList.add('hidden');
-
-          updateProfileStars(user.rating || 0);
-          hideLoader(loginBtn);
-        } else {
-          alert('Admin has not approved your account yet.');
-          signOut(auth);
-          hideLoader(loginBtn);
-        }
-      });
-    })
-    .catch(error => { 
-      alert(error.message);
-      hideLoader(loginBtn);
+  signInWithEmailAndPassword(auth,email,password).then(userCredential=>{
+    const uid=userCredential.user.uid;
+    get(ref(db,'users/'+uid)).then(snapshot=>{
+      if(snapshot.exists() && snapshot.val().status==='approved'){
+        const user=snapshot.val();
+        tdFullName.innerText=user.fullName;
+        tdUsername.innerText=user.username;
+        tdPhone.innerText=user.phone;
+        tdEmail.innerText=user.email;
+        tdProfileStatus.innerText=user.profileStatus || 'New';
+        profileDiv.dataset.uid=uid;
+        profileDiv.classList.remove('hidden');
+        loginDiv.classList.add('hidden');
+        updateProfileStars(user.rating || 0);
+        hideLoader(loginBtn);
+      }else{ alert('Admin has not approved your account yet.'); signOut(auth); hideLoader(loginBtn); }
     });
+  }).catch(error=>{ alert(error.message); hideLoader(loginBtn); });
 });
 
-// Logout
-logoutBtn.addEventListener('click', () => {
-  signOut(auth).then(() => {
-    profileDiv.classList.add('hidden');
-    signupDiv.classList.remove('hidden');
-  });
+logoutBtn.addEventListener('click', ()=>{
+  signOut(auth).then(()=>{ profileDiv.classList.add('hidden'); signupDiv.classList.remove('hidden'); });
 });
 
-// Edit / Save functionality
-document.querySelectorAll('.editBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const field = btn.dataset.field;
-    const td = document.getElementById('td' + field.charAt(0).toUpperCase() + field.slice(1));
-    if(btn.innerText === 'Edit') {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = td.innerText;
-      input.className = 'form-control form-control-sm';
-      td.innerHTML = '';
-      td.appendChild(input);
-      btn.innerText = 'Save';
-    } else {
-      const input = td.querySelector('input');
-      const newValue = input.value;
-      const uid = profileDiv.dataset.uid;
-      const updateData = {};
-      updateData[field] = newValue;
-      update(ref(db, 'users/' + uid), updateData).then(() => {
-        td.innerText = newValue;
-        btn.innerText = 'Edit';
-      });
+// Edit buttons
+document.querySelectorAll('.editBtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const field=btn.dataset.field;
+    const td=document.getElementById('td'+field.charAt(0).toUpperCase()+field.slice(1));
+    if(btn.innerText==='Edit'){
+      const input=document.createElement('input');
+      input.type='text'; input.value=td.innerText; input.className='form-control form-control-sm';
+      td.innerHTML=''; td.appendChild(input); btn.innerText='Save';
+    }else{
+      const input=td.querySelector('input'); const newValue=input.value;
+      const uid=profileDiv.dataset.uid; const updateData={}; updateData[field]=newValue;
+      update(ref(db,'users/'+uid),updateData).then(()=>{ td.innerText=newValue; btn.innerText='Edit'; });
     }
   });
 });
 
 // Password toggle
-document.getElementById('toggleSignupPassword').addEventListener('click', () => {
-  const pwd = document.getElementById('password');
-  pwd.type = pwd.type === 'password' ? 'text' : 'password';
-  document.getElementById('signupSlash').style.display = pwd.type==='text'?'block':'none';
+document.getElementById('toggleSignupPassword').addEventListener('click',()=>{
+  const pwd=document.getElementById('password'); pwd.type=pwd.type==='password'?'text':'password';
+  document.getElementById('signupSlash').style.display=pwd.type==='text'?'block':'none';
 });
-document.getElementById('toggleLoginPassword').addEventListener('click', () => {
-  const pwd = document.getElementById('loginPass');
-  pwd.type = pwd.type === 'password' ? 'text' : 'password';
-  document.getElementById('loginSlash').style.display = pwd.type==='text'?'block':'none';
+document.getElementById('toggleLoginPassword').addEventListener('click',()=>{
+  const pwd=document.getElementById('loginPass'); pwd.type=pwd.type==='password'?'text':'password';
+  document.getElementById('loginSlash').style.display=pwd.type==='text'?'block':'none';
 });
 
-// Rating stars functions
-const profileStars = document.querySelectorAll('#profileStars .star');
+// Rating stars
+const profileStars=document.querySelectorAll('#profileStars .star');
 function updateProfileStars(rating){
-  profileStars.forEach(star => {
-    star.setAttribute('fill', parseInt(star.dataset.value)<=rating?'gold':'gray');
-  });
+  profileStars.forEach(star=>{ star.setAttribute('fill',parseInt(star.dataset.value)<=rating?'gold':'gray'); });
 }
 </script>
 
