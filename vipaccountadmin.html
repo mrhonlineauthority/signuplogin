@@ -33,9 +33,10 @@ h2 { text-align: center; margin-bottom: 20px; }
         <th>Username</th>
         <th>Phone</th>
         <th>Email</th>
-        <th>Status</th>
+        <th>Profile Status</th> <!-- Profile Status কলাম -->
+        <th>Status</th>        <!-- Approve / Unapprove -->
         <th>Action</th>
-        <th>Stars</th> <!-- নতুন স্টার কলাম -->
+        <th>Stars</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -50,7 +51,6 @@ h2 { text-align: center; margin-bottom: 20px; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
   authDomain: "useradminservice.firebaseapp.com",
@@ -71,13 +71,11 @@ let allUsers = [];
 let currentPage = 1;
 const usersPerPage = 10;
 
-// SVG icons only
 const approveSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M13.485 1.929a1 1 0 0 1 1.414 1.414l-9 9a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L5 10.586l8.485-8.657z"/></svg>`;
 const deleteSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24">
 <path d="M3 6h18v2H3V6zm2 3h14v12H5V9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2zm4 0v8h2v-8h-2z"/>
 </svg>`;
 
-// Load users
 onValue(ref(db, 'users'), snapshot => {
   allUsers = [];
   snapshot.forEach(childSnap => {
@@ -101,9 +99,33 @@ function renderTable() {
     row.insertCell(1).innerText = user.username;
     row.insertCell(2).innerText = user.phone;
     row.insertCell(3).innerText = user.email;
-    row.insertCell(4).innerText = user.status;
 
-    const actionCell = row.insertCell(5);
+    // Profile Status Column (ড্রপডাউন)
+    const profileStatusCell = row.insertCell(4);
+    const select = document.createElement('select');
+    select.className = 'form-select form-select-sm';
+    ['New','Professional','Verify','Vip'].forEach(optionText => {
+      const option = document.createElement('option');
+      option.value = optionText;
+      option.text = optionText;
+      if(user.profileStatus === optionText) option.selected = true;
+      select.appendChild(option);
+    });
+    select.addEventListener('change', () => {
+      const newProfileStatus = select.value;
+      update(ref(db, 'users/' + user.uid), { profileStatus: newProfileStatus }).then(() => {
+        // শুধু Profile Status আপডেট হবে, Status নয়
+        select.value = newProfileStatus;
+      });
+    });
+    profileStatusCell.appendChild(select);
+
+    // Status Column (Approve / Unapprove)
+    const statusCell = row.insertCell(5);
+    statusCell.innerText = user.status;
+
+    // Action Buttons
+    const actionCell = row.insertCell(6);
     const actionDiv = document.createElement('div');
     actionDiv.className = 'action-btns';
 
@@ -114,7 +136,7 @@ function renderTable() {
     approveBtn.onclick = () => {
       const newStatus = approveBtn.title === 'Approve' ? 'approved' : 'pending';
       update(ref(db, 'users/' + user.uid), { status: newStatus }).then(() => {
-        row.cells[4].innerText = newStatus;
+        statusCell.innerText = newStatus;
         approveBtn.className = newStatus === 'approved' ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm';
         approveBtn.title = newStatus === 'approved' ? 'Unapprove' : 'Approve';
       });
@@ -131,11 +153,10 @@ function renderTable() {
       }
     };
     actionDiv.appendChild(deleteBtn);
-
     actionCell.appendChild(actionDiv);
 
     // Stars Column
-    const starsCell = row.insertCell(6);
+    const starsCell = row.insertCell(7);
     starsCell.id = 'stars-' + user.uid;
     for(let i=1;i<=3;i++){
       const star = document.createElementNS("http://www.w3.org/2000/svg",'svg');
@@ -153,7 +174,6 @@ function renderTable() {
         const value = parseInt(star.dataset.value);
         const uid = star.dataset.uid;
         update(ref(db, 'users/' + uid), { rating: value }).then(() => {
-          // Update all stars display
           const starContainer = document.getElementById('stars-' + uid);
           starContainer.querySelectorAll('.star path').forEach(s => {
             const starVal = parseInt(s.parentElement.dataset.value);
