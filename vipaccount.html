@@ -26,6 +26,22 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
 #passwordRules ul { margin:4px 0 0 16px; padding:0; }
 
 #profileStars svg { margin: 0 2px; }
+
+/* Loader CSS */
+.loader {
+  border: 2px solid #f3f3f3; 
+  border-top: 2px solid #fff; 
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
@@ -170,6 +186,17 @@ const tdEmail = document.getElementById('tdEmail');
 showLoginLink.addEventListener('click', () => { signupDiv.classList.add('hidden'); loginDiv.classList.remove('hidden'); });
 backSignupLink.addEventListener('click', () => { loginDiv.classList.add('hidden'); signupDiv.classList.remove('hidden'); });
 
+// Loader functions
+function showLoader(button){
+  button.disabled = true;
+  button.dataset.originalText = button.innerHTML;
+  button.innerHTML = '<span class="loader"></span>';
+}
+function hideLoader(button){
+  button.disabled = false;
+  button.innerHTML = button.dataset.originalText;
+}
+
 // Signup
 signupBtn.addEventListener('click', () => {
   const fullName = document.getElementById('fullName').value.trim();
@@ -189,19 +216,29 @@ signupBtn.addEventListener('click', () => {
     return;
   }
 
+  showLoader(signupBtn);
+
   createUserWithEmailAndPassword(auth, email, password)
     .then(userCredential => {
       const uid = userCredential.user.uid;
-      set(ref(db, 'users/' + uid), { fullName, username, phone, email, status: 'pending', rating:0 });
-      alert('Signup successful! Wait for admin approval.');
+      set(ref(db, 'users/' + uid), { fullName, username, phone, email, status: 'pending', rating:0 })
+        .then(() => { 
+          alert('Signup successful! Wait for admin approval.');
+          hideLoader(signupBtn);
+        });
     })
-    .catch(error => alert(error.message));
+    .catch(error => { 
+      alert(error.message);
+      hideLoader(signupBtn);
+    });
 });
 
 // Login
 loginBtn.addEventListener('click', () => {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPass').value;
+
+  showLoader(loginBtn);
 
   signInWithEmailAndPassword(auth, email, password)
     .then(userCredential => {
@@ -217,15 +254,19 @@ loginBtn.addEventListener('click', () => {
           profileDiv.classList.remove('hidden');
           loginDiv.classList.add('hidden');
 
-          // রেটিং লোড
           updateProfileStars(user.rating || 0);
+          hideLoader(loginBtn);
         } else {
           alert('Admin has not approved your account yet.');
           signOut(auth);
+          hideLoader(loginBtn);
         }
       });
     })
-    .catch(error => alert(error.message));
+    .catch(error => { 
+      alert(error.message);
+      hideLoader(loginBtn);
+    });
 });
 
 // Logout
@@ -285,4 +326,4 @@ function updateProfileStars(rating){
 </script>
 
 </body>
-  </html>
+</html>
