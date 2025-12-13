@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { padding: 20px; background: #f8f9fa; }
+h2 { text-align: center; margin-bottom: 20px; }
+.table th, .table td { vertical-align: middle; font-size: 0.9rem; }
+.table thead th {
+    background-color: #ff69b4; /* গোলাপি রঙ */
+    color: white; /* হেডিং টেক্সটের রঙ */
+}
+.action-btns { display: flex; gap: 5px; justify-content: center; }
+.btn-sm { width: 35px; height: 35px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.btn-success { background-color: #28a745; border-color: #28a745; }
+.btn-warning { background-color: #ffc107; border-color: #ffc107; }
+.btn-danger { background-color: #dc3545; border-color: #dc3545; }
+.pagination { justify-content: center; }
+</style>
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+<div class="table-responsive">
+  <table class="table table-bordered table-sm" id="usersTable">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Username</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination" id="pagination"></ul>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
+  authDomain: "useradminservice.firebaseapp.com",
+  databaseURL: "https://useradminservice-default-rtdb.firebaseio.com/",
+  projectId: "useradminservice",
+  storageBucket: "useradminservice.firebasestorage.app",
+  messagingSenderId: "767073548166",
+  appId: "1:767073548166:web:a3dbfaed202a13d9b75e07"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const tbody = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+const pagination = document.getElementById('pagination');
+
+let allUsers = [];
+let currentPage = 1;
+const usersPerPage = 10;
+
+// SVG icons only
+const approveSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M13.485 1.929a1 1 0 0 1 1.414 1.414l-9 9a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L5 10.586l8.485-8.657z"/></svg>`;
+
+// New clearer delete/trash icon
+const deleteSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24">
+<path d="M3 6h18v2H3V6zm2 3h14v12H5V9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2zm4 0v8h2v-8h-2z"/>
+</svg>`;
+
+// Load users
+onValue(ref(db, 'users'), snapshot => {
+  allUsers = [];
+  snapshot.forEach(childSnap => {
+    const user = childSnap.val();
+    user.uid = childSnap.key;
+    allUsers.push(user);
+  });
+  renderTable();
+  renderPagination();
+});
+
+function renderTable() {
+  tbody.innerHTML = '';
+  const start = (currentPage - 1) * usersPerPage;
+  const end = start + usersPerPage;
+  const usersToShow = allUsers.slice(start, end);
+
+  usersToShow.forEach(user => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = user.fullName;
+    row.insertCell(1).innerText = user.username;
+    row.insertCell(2).innerText = user.phone;
+    row.insertCell(3).innerText = user.email;
+    row.insertCell(4).innerText = user.status;
+
+    const actionCell = row.insertCell(5);
+    const actionDiv = document.createElement('div');
+    actionDiv.className = 'action-btns';
+
+    // Approve/Unapprove
+    const approveBtn = document.createElement('button');
+    approveBtn.className = user.status === 'approved' ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm';
+    approveBtn.innerHTML = approveSVG;
+    approveBtn.title = user.status === 'approved' ? 'Unapprove' : 'Approve';
+    approveBtn.onclick = () => {
+      const newStatus = approveBtn.title === 'Approve' ? 'approved' : 'pending';
+      update(ref(db, 'users/' + user.uid), { status: newStatus }).then(() => {
+        row.cells[4].innerText = newStatus;
+        approveBtn.className = newStatus === 'approved' ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm';
+        approveBtn.title = newStatus === 'approved' ? 'Unapprove' : 'Approve';
+      });
+    };
+    actionDiv.appendChild(approveBtn);
+
+    // Delete
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn btn-danger btn-sm';
+    deleteBtn.innerHTML = deleteSVG;
+    deleteBtn.title = 'Delete';
+    deleteBtn.onclick = () => {
+      if(confirm(`Are you sure you want to delete ${user.fullName}?`)) {
+        remove(ref(db, 'users/' + user.uid));
+      }
+    };
+    actionDiv.appendChild(deleteBtn);
+
+    actionCell.appendChild(actionDiv);
+  });
+}
+
+// Pagination
+function renderPagination() {
+  pagination.innerHTML = '';
+  const totalPages = Math.ceil(allUsers.length / usersPerPage);
+  const maxButtons = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  if(endPage - startPage < maxButtons -1) startPage = Math.max(1, endPage - maxButtons + 1);
+
+  if(startPage > 1){
+    const li = document.createElement('li');
+    li.className = 'page-item';
+    li.innerHTML = `<a class="page-link" href="#">1 ...</a>`;
+    li.onclick = () => { currentPage = 1; renderTable(); renderPagination(); };
+    pagination.appendChild(li);
+  }
+
+  for(let i=startPage;i<=endPage;i++){
+    const li = document.createElement('li');
+    li.className = 'page-item' + (i===currentPage?' active':'');
+    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+    li.onclick = () => { currentPage = i; renderTable(); renderPagination(); };
+    pagination.appendChild(li);
+  }
+
+  if(endPage < totalPages){
+    const li = document.createElement('li');
+    li.className = 'page-item';
+    li.innerHTML = `<a class="page-link" href="#">... ${totalPages}</a>`;
+    li.onclick = () => { currentPage = totalPages; renderTable(); renderPagination(); };
+    pagination.appendChild(li);
+  }
+}
+</script>
+
+</body>
+</html>
