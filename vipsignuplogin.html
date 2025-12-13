@@ -1,228 +1,279 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M.R.H Auth System</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-    body{background:#f3f3f3;display:flex;justify-content:center;align-items:center;min-height:100vh;}
-    .container{background:#fff;width:90%;max-width:400px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.15);padding:30px;text-align:center;transition:0.3s;}
-    h2{margin-bottom:15px;color:#333;}
-    .input-group{position:relative;margin:8px 0;}
-    input{width:100%;padding:12px 40px 12px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;}
-    .toggle-pass{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;}
-    button{width:100%;background:#ff4081;color:#fff;padding:12px;border:none;border-radius:8px;font-size:16px;margin-top:10px;cursor:pointer;transition:0.3s;}
-    button:hover{background:#e73370;}
-    .google-btn, .facebook-btn{background:#fff;color:#444;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;padding:10px;border-radius:8px;cursor:pointer;transition:0.3s;}
-    .google-btn img, .facebook-btn img{width:22px;}
-    .google-btn:hover, .facebook-btn:hover{background:#f0f0f0;}
-    .link-text{font-size:14px;color:#555;margin-top:10px;}
-    .link-text span{color:#ff4081;cursor:pointer;font-weight:bold;}
-    .profile{display:none;}
-    .profile i{font-size:60px;color:#ff4081;margin-bottom:15px;}
-    .password-info{font-size:12px;color:#555;text-align:left;margin:4px 0;}
-    .password-info span{color:#ff4081;}
-    @media(max-width:450px){.container{padding:20px;}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Panel</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { padding: 20px; background: #f8f9fa; }
+.container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px #aaa; position: relative;}
+h2 { text-align: center; margin-bottom: 20px; }
+.hidden { display: none; }
+.text-link { color: blue; cursor: pointer; text-decoration: underline; }
+#profileIcon { display: block; margin: 0 auto 20px; width: 80px; height: 80px; }
+
+.table { width: 100%; margin-bottom: 0; font-size: 0.9rem; }
+.table td, .table th { padding: 0.35rem; vertical-align: middle; }
+.editBtn { margin-left: 5px; font-size: 0.75rem; padding: 0.25rem 0.4rem; }
+
+input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5rem; font-size: 0.85rem; }
+
+.password-wrapper { position: relative; }
+.password-wrapper svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width:20px; height:20px; cursor:pointer; }
+
+#passwordRules { font-size:12px; color:#555; margin-bottom:8px; }
+#passwordRules ul { margin:4px 0 0 16px; padding:0; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Signup Form -->
-    <div class="signup">
-      <h2>Create Account</h2>
-      <input type="text" id="fullname" placeholder="Full Name" required>
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="email" id="signupEmail" placeholder="Email" required>
-      <div class="input-group">
-        <input type="password" id="signupPassword" placeholder="Password" required>
-        <i class="fa-solid fa-eye toggle-pass" id="toggleSignupPass"></i>
-      </div>
-      <div class="password-info">
-        Password must be 8+ chars, include <span>uppercase</span>, <span>lowercase</span>, <span>number</span> & <span>symbol</span>
-      </div>
-      <div class="input-group">
-        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-        <i class="fa-solid fa-eye toggle-pass" id="toggleSignupConfirm"></i>
-      </div>
-      <button id="signupBtn">Sign Up</button>
 
-      <button class="google-btn" id="googleSignup"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Continue with Google</button>
-      <button class="facebook-btn" id="facebookSignup"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png">Continue with Facebook</button>
-
-      <p class="link-text">Already have an account? <span id="toLogin">Login</span></p>
-    </div>
-
-    <!-- Login Form -->
-    <div class="login" style="display:none;">
-      <h2>Login</h2>
-      <input type="email" id="loginEmail" placeholder="Email" required>
-      <div class="input-group">
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <i class="fa-solid fa-eye toggle-pass" id="toggleLoginPass"></i>
-      </div>
-      <button id="loginBtn">Login</button>
-
-      <button class="google-btn" id="googleLogin"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Login with Google</button>
-      <button class="facebook-btn" id="facebookLogin"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png">Login with Facebook</button>
-
-      <p class="link-text">Don’t have an account? <span id="toSignup">Sign Up</span></p>
-    </div>
-
-    <!-- Profile Page -->
-    <div class="profile">
-      <i class="fa-solid fa-user-circle"></i>
-      <h2 id="welcomeText">Welcome to our system.</h2>
-      <button id="logoutBtn">Logout</button>
-    </div>
+<!-- Signup -->
+<div class="container" id="signupDiv">
+  <h2>Signup</h2>
+  <input type="text" id="fullName" class="form-control mb-2" placeholder="Full Name">
+  <input type="text" id="username" class="form-control mb-2" placeholder="Username">
+  <input type="text" id="phone" class="form-control mb-2" placeholder="Phone">
+  <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+  
+  <div class="password-wrapper mb-2">
+    <input type="password" id="password" class="form-control" placeholder="Password">
+    <svg id="toggleSignupPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path id="signupEye" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      <path id="signupEyeOutline" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
+      <line id="signupSlash" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" style="display:none"/>
+    </svg>
+  </div>
+  <!-- Password Rules -->
+  <div id="passwordRules">
+    Password must contain:
+    <ul>
+      <li>At least 8 characters</li>
+      <li>1 uppercase letter (A-Z)</li>
+      <li>1 lowercase letter (a-z)</li>
+      <li>1 number (0-9)</li>
+      <li>1 special character (@$!%*?&)</li>
+    </ul>
   </div>
 
-  <!-- Firebase Scripts -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signInWithPopup,
-      GoogleAuthProvider,
-      FacebookAuthProvider,
-      signOut,
-      onAuthStateChanged,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  <button class="btn btn-primary w-100" id="signupBtn">Signup</button>
+  <p class="text-center mt-2">Already have an account? <span class="text-link" id="showLoginLink">Login here</span></p>
+</div>
 
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      addDoc,
-      query,
-      where
-    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+<!-- Login -->
+<div class="container hidden" id="loginDiv">
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" class="form-control mb-2" placeholder="Email">
+  
+  <div class="password-wrapper mb-2">
+    <input type="password" id="loginPass" class="form-control" placeholder="Password">
+    <svg id="toggleLoginPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path id="loginEye" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      <path id="loginEyeOutline" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
+      <line id="loginSlash" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" style="display:none"/>
+    </svg>
+  </div>
+  
+  <button class="btn btn-success w-100" id="loginBtn">Login</button>
+  <p class="text-center mt-2">Don't have an account? <span class="text-link" id="backSignupLink">Sign Up</span></p>
+</div>
 
-    // 🔹 Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyB5sGaaPwOM1WoySpZUqfcUEnDTGWHla58",
-      authDomain: "mrhlogin-2cd54.firebaseapp.com",
-      projectId: "mrhlogin-2cd54",
-      storageBucket: "mrhlogin-2cd54.firebasestorage.app",
-      messagingSenderId: "372410485178",
-      appId: "1:372410485178:web:8485563e94a740147bb583"
-    };
+<!-- Profile -->
+<div class="container mt-4 hidden" id="profileDiv">
+  <h2>Profile</h2>
+  <svg id="profileIcon" xmlns="http://www.w3.org/2000/svg" fill="gray" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.2c-3.1 0-9.3 1.6-9.3 4.9v2.4h18.6v-2.4c0-3.3-6.2-4.9-9.3-4.9z"/></svg>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const googleProvider = new GoogleAuthProvider();
-    const fbProvider = new FacebookAuthProvider();
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered table-sm mb-3">
+      <tbody>
+        <tr>
+          <th style="width:30%;">Full Name</th>
+          <td id="tdFullName"></td>
+          <td style="width:20%;"><button class="btn btn-sm btn-primary editBtn" data-field="fullName">Edit</button></td>
+        </tr>
+        <tr>
+          <th>Username</th>
+          <td id="tdUsername"></td>
+          <td><button class="btn btn-sm btn-primary editBtn" data-field="username">Edit</button></td>
+        </tr>
+        <tr>
+          <th>Phone</th>
+          <td id="tdPhone"></td>
+          <td><button class="btn btn-sm btn-primary editBtn" data-field="phone">Edit</button></td>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <td id="tdEmail"></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    // UI Elements
-    const signupBox = document.querySelector('.signup');
-    const loginBox = document.querySelector('.login');
-    const profileBox = document.querySelector('.profile');
+  <button class="btn btn-danger w-100" id="logoutBtn">Logout</button>
+</div>
 
-    const toLogin = document.getElementById('toLogin');
-    const toSignup = document.getElementById('toSignup');
-    const signupBtn = document.getElementById('signupBtn');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const googleSignup = document.getElementById('googleSignup');
-    const googleLogin = document.getElementById('googleLogin');
-    const facebookSignup = document.getElementById('facebookSignup');
-    const facebookLogin = document.getElementById('facebookLogin');
-    const welcomeText = document.getElementById('welcomeText');
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-    const toggleSignupPass = document.getElementById('toggleSignupPass');
-    const toggleSignupConfirm = document.getElementById('toggleSignupConfirm');
-    const toggleLoginPass = document.getElementById('toggleLoginPass');
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
+  authDomain: "useradminservice.firebaseapp.com",
+  databaseURL: "https://useradminservice-default-rtdb.firebaseio.com/",
+  projectId: "useradminservice",
+  storageBucket: "useradminservice.firebasestorage.app",
+  messagingSenderId: "767073548166",
+  appId: "1:767073548166:web:a3dbfaed202a13d9b75e07"
+};
 
-    // Toggle Password Visibility
-    toggleSignupPass.onclick = ()=>{ const p=document.getElementById('signupPassword'); p.type = p.type==='password'?'text':'password'; }
-    toggleSignupConfirm.onclick = ()=>{ const p=document.getElementById('confirmPassword'); p.type = p.type==='password'?'text':'password'; }
-    toggleLoginPass.onclick = ()=>{ const p=document.getElementById('loginPassword'); p.type = p.type==='password'?'text':'password'; }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-    // Switch forms
-    toLogin.onclick = ()=>{ signupBox.style.display='none'; loginBox.style.display='block'; }
-    toSignup.onclick = ()=>{ loginBox.style.display='none'; signupBox.style.display='block'; }
+// Elements
+const signupDiv = document.getElementById('signupDiv');
+const loginDiv = document.getElementById('loginDiv');
+const profileDiv = document.getElementById('profileDiv');
 
-    // Password validation
-    function isStrongPassword(p){
-      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(p);
+const signupBtn = document.getElementById('signupBtn');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const showLoginLink = document.getElementById('showLoginLink');
+const backSignupLink = document.getElementById('backSignupLink');
+
+const tdFullName = document.getElementById('tdFullName');
+const tdUsername = document.getElementById('tdUsername');
+const tdPhone = document.getElementById('tdPhone');
+const tdEmail = document.getElementById('tdEmail');
+
+// Show login/signup
+showLoginLink.addEventListener('click', () => { signupDiv.classList.add('hidden'); loginDiv.classList.remove('hidden'); });
+backSignupLink.addEventListener('click', () => { loginDiv.classList.add('hidden'); signupDiv.classList.remove('hidden'); });
+
+// Signup
+signupBtn.addEventListener('click', () => {
+  const fullName = document.getElementById('fullName').value.trim();
+  const username = document.getElementById('username').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  // --- REQUIRED FIELD CHECK ---
+  if(!fullName || !username || !phone || !email || !password){
+    alert("Please fill in all required fields.");
+    return;
+  }
+
+  // --- STRONG PASSWORD CHECK ---
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  if(!strongPasswordRegex.test(password)){
+    alert("Password is not strong enough. Please follow the password rules.");
+    return;
+  }
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      const uid = userCredential.user.uid;
+      set(ref(db, 'users/' + uid), { fullName, username, phone, email, status: 'pending' });
+      alert('Signup successful! Wait for admin approval.');
+    })
+    .catch(error => alert(error.message));
+});
+
+// Login
+loginBtn.addEventListener('click', () => {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPass').value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      const uid = userCredential.user.uid;
+      get(ref(db, 'users/' + uid)).then(snapshot => {
+        if(snapshot.exists() && snapshot.val().status === 'approved') {
+          const user = snapshot.val();
+          tdFullName.innerText = user.fullName;
+          tdUsername.innerText = user.username;
+          tdPhone.innerText = user.phone;
+          tdEmail.innerText = user.email;
+
+          profileDiv.dataset.uid = uid;
+          profileDiv.classList.remove('hidden');
+          loginDiv.classList.add('hidden');
+        } else {
+          alert('Admin has not approved your account yet.');
+          signOut(auth);
+        }
+      });
+    })
+    .catch(error => alert(error.message));
+});
+
+// Logout
+logoutBtn.addEventListener('click', () => {
+  signOut(auth).then(() => {
+    profileDiv.classList.add('hidden');
+    signupDiv.classList.remove('hidden');
+  });
+});
+
+// Edit / Save functionality
+document.querySelectorAll('.editBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const field = btn.dataset.field;
+    const td = document.getElementById('td' + field.charAt(0).toUpperCase() + field.slice(1));
+    if(btn.innerText === 'Edit') {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = td.innerText;
+      input.className = 'form-control form-control-sm';
+      td.innerHTML = '';
+      td.appendChild(input);
+      btn.innerText = 'Save';
+    } else {
+      const input = td.querySelector('input');
+      const newValue = input.value;
+      const uid = profileDiv.dataset.uid;
+      const updateData = {};
+      updateData[field] = newValue;
+      update(ref(db, 'users/' + uid), updateData).then(() => {
+        td.innerText = newValue;
+        btn.innerText = 'Edit';
+      });
     }
+  });
+});
 
-    // Check password uniqueness
-    async function isUniquePassword(p){
-      const q = query(collection(db,"passwords"), where("pass","==",p));
-      const snap = await getDocs(q);
-      return snap.empty;
-    }
+// Password toggle functionality
+const toggleSignupPassword = document.getElementById('toggleSignupPassword');
+const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+const signupSlash = document.getElementById('signupSlash');
+const loginSlash = document.getElementById('loginSlash');
 
-    // Save password hash to Firestore
-    async function savePassword(p){
-      await addDoc(collection(db,"passwords"), {pass:p});
-    }
+toggleSignupPassword.addEventListener('click', () => {
+  const pwd = document.getElementById('password');
+  if(pwd.type === 'password'){
+    pwd.type = 'text';
+    signupSlash.style.display = 'block';
+  } else {
+    pwd.type = 'password';
+    signupSlash.style.display = 'none';
+  }
+});
 
-    // Signup Email/Password
-    signupBtn.onclick = async ()=>{
-      const name = document.getElementById('fullname').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('signupEmail').value;
-      const pass = document.getElementById('signupPassword').value;
-      const confirm = document.getElementById('confirmPassword').value;
+toggleLoginPassword.addEventListener('click', () => {
+  const pwd = document.getElementById('loginPass');
+  if(pwd.type === 'password'){
+    pwd.type = 'text';
+    loginSlash.style.display = 'block';
+  } else {
+    pwd.type = 'password';
+    loginSlash.style.display = 'none';
+  }
+});
+</script>
 
-      if(pass !== confirm){ alert("Passwords do not match!"); return; }
-      if(!isStrongPassword(pass)){ alert("Password is not strong enough!"); return; }
-      if(!(await isUniquePassword(pass))){ alert("Password already used by another user!"); return; }
-
-      try{
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        await updateProfile(userCredential.user, { displayName: name || username });
-        await savePassword(pass);
-        alert("Account created successfully!");
-      }catch(err){
-        alert(err.message);
-      }
-    }
-
-    // Login Email/Password
-    loginBtn.onclick = async ()=>{
-      const email = document.getElementById('loginEmail').value;
-      const pass = document.getElementById('loginPassword').value;
-      try{
-        await signInWithEmailAndPassword(auth, email, pass);
-      }catch(err){
-        alert(err.message);
-      }
-    }
-
-    // Google SignUp/Login
-    googleSignup.onclick = async ()=>{ await signInWithPopup(auth, googleProvider); }
-    googleLogin.onclick = async ()=>{ await signInWithPopup(auth, googleProvider); }
-
-    // Facebook SignUp/Login
-    facebookSignup.onclick = async ()=>{ await signInWithPopup(auth, fbProvider); }
-    facebookLogin.onclick = async ()=>{ await signInWithPopup(auth, fbProvider); }
-
-    // Logout
-    logoutBtn.onclick = ()=>{ signOut(auth); }
-
-    // Auth State
-    onAuthStateChanged(auth, (user)=>{
-      if(user){
-        signupBox.style.display='none';
-        loginBox.style.display='none';
-        profileBox.style.display='block';
-        welcomeText.innerText = `Welcome to our system, ${user.displayName || "User"}!`;
-      }else{
-        signupBox.style.display='block';
-        loginBox.style.display='none';
-        profileBox.style.display='none';
-      }
-    });
-
-  </script>
 </body>
 </html>
