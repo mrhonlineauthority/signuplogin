@@ -216,7 +216,16 @@ signupBtn.addEventListener('click', () => {
 
   createUserWithEmailAndPassword(auth,email,password).then(userCredential=>{
     const uid=userCredential.user.uid;
-    set(ref(db,'users/'+uid),{fullName,username,phone,email,status:'pending',rating:0,profileStatus:'New'}).then(()=>{
+    set(ref(db,'users/'+uid),{
+      fullName,
+      username,
+      phone,
+      email,
+      status:'pending',
+      rating:0,
+      profileStatus:'New',
+      signupTime: Date.now()   // ⬅️ এখানে যুক্ত করো
+    }).then(()=>{
       alert('Signup successful! Wait for admin approval.');
       hideLoader(signupBtn);
     });
@@ -290,4 +299,4 @@ function updateProfileStars(rating){
 </script>
 
 </body>
-</html>
+          </html>
