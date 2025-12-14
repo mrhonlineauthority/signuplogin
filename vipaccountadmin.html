@@ -19,6 +19,8 @@ h2 { text-align: center; margin-bottom: 20px; }
 #loginCard { max-width: 400px; margin: 100px auto; padding: 20px; background:white; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.2);}
 #adminPanel { display:none; }
 .pagination { justify-content: flex-end; }
+.id-container { display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer; }
+.id-text { font-weight:bold; }
 </style>
 </head>
 <body>
@@ -53,6 +55,7 @@ h2 { text-align: center; margin-bottom: 20px; }
       <tr>
         <th>Full Name</th>
         <th>Username</th>
+        <th>ID No</th>
         <th>Phone</th>
         <th>Email</th>
         <th>Profile Status</th>
@@ -106,6 +109,8 @@ const usersPerPage = 10;
 
 const approveSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M13.485 1.929a1 1 0 0 1 1.414 1.414l-9 9a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L5 10.586l8.485-8.657z"/></svg>`;
 const deleteSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm2 3h14v12H5V9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2zm4 0v8h2v-8h-2z"/></svg>`;
+const addIDSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16"><path d="M8 1v14M1 8h14"/></svg>`;
+const editIDSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" viewBox="0 0 16 16"><path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/></svg>`;
 
 // Login
 loginBtn.onclick = () => {
@@ -161,7 +166,7 @@ onAuthStateChanged(auth, user => {
 function loadUsers(){
   onValue(ref(db,'users'), snapshot=>{
     if(!snapshot.exists()){ 
-      tbody.innerHTML = '<tr><td colspan="8" class="text-center">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center">No users found</td></tr>';
       return; 
     }
     allUsers = [];
@@ -182,7 +187,6 @@ function renderTable(){
   const end = start + usersPerPage;
   let usersToShow = allUsers.slice(start,end);
 
-  // Apply search filter
   const query = searchInput.value.toLowerCase();
   if(query) usersToShow = usersToShow.filter(u=>u.email.toLowerCase().includes(query));
 
@@ -190,10 +194,39 @@ function renderTable(){
     const row = tbody.insertRow();
     row.insertCell(0).innerText = user.fullName || '';
     row.insertCell(1).innerText = user.username || '';
-    row.insertCell(2).innerText = user.phone || '';
-    row.insertCell(3).innerText = user.email || '';
 
-    const profileCell = row.insertCell(4);
+    // ID No Cell
+    const idCell = row.insertCell(2);
+    idCell.style.textAlign = 'center';
+    const idContainer = document.createElement('div');
+    idContainer.className='id-container';
+
+    const idText = document.createElement('span');
+    idText.className='id-text';
+    idText.innerText = user.idNo || '';
+    idContainer.appendChild(idText);
+
+    const idIcon = document.createElement('span');
+    idIcon.innerHTML = user.idNo ? editIDSVG : addIDSVG;
+    idContainer.appendChild(idIcon);
+
+    idContainer.onclick = ()=>{
+      const newId = prompt("Enter 16-digit ID No:", user.idNo||"");
+      if(newId && newId.length===16){
+        update(ref(db,'users/'+user.uid), {idNo:newId}).then(()=>{
+          user.idNo=newId;
+          idText.innerText=newId;
+          idIcon.innerHTML = editIDSVG;
+        });
+      } else if(newId) alert('ID must be 16 digits');
+    };
+
+    idCell.appendChild(idContainer);
+
+    row.insertCell(3).innerText = user.phone || '';
+    row.insertCell(4).innerText = user.email || '';
+
+    const profileCell = row.insertCell(5);
     const select = document.createElement('select');
     select.className='form-select form-select-sm';
     ['New','Professional','Verify','Vip'].forEach(opt=>{
@@ -206,10 +239,10 @@ function renderTable(){
     select.onchange = ()=>update(ref(db,'users/'+user.uid),{profileStatus:select.value});
     profileCell.appendChild(select);
 
-    const statusCell=row.insertCell(5);
+    const statusCell=row.insertCell(6);
     statusCell.innerText = user.status || 'pending';
 
-    const actionCell=row.insertCell(6);
+    const actionCell=row.insertCell(7);
     const actionDiv=document.createElement('div');
     actionDiv.className='action-btns';
 
@@ -230,7 +263,7 @@ function renderTable(){
     actionDiv.appendChild(deleteBtn);
     actionCell.appendChild(actionDiv);
 
-    const starsCell=row.insertCell(7);
+    const starsCell=row.insertCell(8);
     starsCell.id='stars-'+user.uid;
     for(let i=1;i<=3;i++){
       const star=document.createElementNS("http://www.w3.org/2000/svg",'svg');
