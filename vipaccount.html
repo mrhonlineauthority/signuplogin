@@ -135,6 +135,12 @@ input.form-control-sm { height: calc(1.5em + 0.5rem + 2px); padding: 0.25rem 0.5
           <td id="tdPhone"></td>
           <td><button class="btn btn-sm btn-primary editBtn" data-field="phone">Edit</button></td>
         </tr>
+        <!-- ID No Row (non-editable) -->
+        <tr>
+          <th>ID No</th>
+          <td id="tdIDNo"></td>
+          <td>—</td>
+        </tr>
         <tr>
           <th>Email</th>
           <td id="tdEmail"></td>
@@ -186,6 +192,7 @@ const tdUsername = document.getElementById('tdUsername');
 const tdPhone = document.getElementById('tdPhone');
 const tdEmail = document.getElementById('tdEmail');
 const tdProfileStatus = document.getElementById('tdProfileStatus');
+const tdIDNo = document.getElementById('tdIDNo');
 
 showLoginLink.addEventListener('click', () => { signupDiv.classList.add('hidden'); loginDiv.classList.remove('hidden'); });
 backSignupLink.addEventListener('click', () => { loginDiv.classList.add('hidden'); signupDiv.classList.remove('hidden'); });
@@ -230,6 +237,10 @@ loginBtn.addEventListener('click', ()=>{
         tdPhone.innerText=user.phone;
         tdEmail.innerText=user.email;
         tdProfileStatus.innerText=user.profileStatus || 'New';
+
+        // Display ID No (non-editable)
+        tdIDNo.innerText = user.idNo || '—';
+
         profileDiv.dataset.uid=uid;
         profileDiv.classList.remove('hidden');
         loginDiv.classList.add('hidden');
