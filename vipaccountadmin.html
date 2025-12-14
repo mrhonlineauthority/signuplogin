@@ -53,6 +53,7 @@ h2 { text-align: center; margin-bottom: 20px; }
   <table class="table table-bordered table-sm" id="usersTable">
     <thead>
       <tr>
+        <th>Signup Time</th> <!-- New Column -->
         <th>Full Name</th>
         <th>Username</th>
         <th>ID No</th>
@@ -166,7 +167,7 @@ onAuthStateChanged(auth, user => {
 function loadUsers(){
   onValue(ref(db,'users'), snapshot=>{
     if(!snapshot.exists()){ 
-      tbody.innerHTML = '<tr><td colspan="9" class="text-center">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" class="text-center">No users found</td></tr>';
       return; 
     }
     allUsers = [];
@@ -192,11 +193,19 @@ function renderTable(){
 
   usersToShow.forEach(user=>{
     const row = tbody.insertRow();
-    row.insertCell(0).innerText = user.fullName || '';
-    row.insertCell(1).innerText = user.username || '';
 
-    // ID No Cell
-    const idCell = row.insertCell(2);
+    // 1️⃣ Signup Time Cell
+    const timeCell = row.insertCell(0);
+    timeCell.innerText = user.signupTime ? new Date(user.signupTime).toLocaleString() : '—';
+
+    // 2️⃣ Full Name Cell
+    row.insertCell(1).innerText = user.fullName || '';
+
+    // 3️⃣ Username Cell
+    row.insertCell(2).innerText = user.username || '';
+
+    // 4️⃣ ID No Cell
+    const idCell = row.insertCell(3);
     idCell.style.textAlign = 'center';
     const idContainer = document.createElement('div');
     idContainer.className='id-container';
@@ -220,13 +229,16 @@ function renderTable(){
         });
       } else if(newId) alert('ID must be 16 digits');
     };
-
     idCell.appendChild(idContainer);
 
-    row.insertCell(3).innerText = user.phone || '';
-    row.insertCell(4).innerText = user.email || '';
+    // 5️⃣ Phone Cell
+    row.insertCell(4).innerText = user.phone || '';
 
-    const profileCell = row.insertCell(5);
+    // 6️⃣ Email Cell
+    row.insertCell(5).innerText = user.email || '';
+
+    // 7️⃣ Profile Status
+    const profileCell = row.insertCell(6);
     const select = document.createElement('select');
     select.className='form-select form-select-sm';
     ['New','Professional','Verify','Vip'].forEach(opt=>{
@@ -239,10 +251,12 @@ function renderTable(){
     select.onchange = ()=>update(ref(db,'users/'+user.uid),{profileStatus:select.value});
     profileCell.appendChild(select);
 
-    const statusCell=row.insertCell(6);
+    // 8️⃣ Status Cell
+    const statusCell=row.insertCell(7);
     statusCell.innerText = user.status || 'pending';
 
-    const actionCell=row.insertCell(7);
+    // 9️⃣ Action Cell
+    const actionCell=row.insertCell(8);
     const actionDiv=document.createElement('div');
     actionDiv.className='action-btns';
 
@@ -263,7 +277,8 @@ function renderTable(){
     actionDiv.appendChild(deleteBtn);
     actionCell.appendChild(actionDiv);
 
-    const starsCell=row.insertCell(8);
+    // 10️⃣ Stars Cell
+    const starsCell=row.insertCell(9);
     starsCell.id='stars-'+user.uid;
     for(let i=1;i<=3;i++){
       const star=document.createElementNS("http://www.w3.org/2000/svg",'svg');
