@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MRH Logo Display System</title>
+  <title>MRH Authority Image</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -19,39 +19,39 @@
       padding: 30px 10px;
     }
 
-    /* ===== First Logo (1280×768) ===== */
+    /* Heading */
+    .heading {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #222;
+      letter-spacing: 1px;
+    }
+
+    /* First Logo (1280×768) */
     .main-logo {
-      width: 800px;           /* Desktop size */
+      width: 800px;
       max-width: 95%;
       aspect-ratio: 1280 / 768;
       object-fit: cover;
       border-radius: 14px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       background: #fff;
+      margin: 20px auto;   /* চারপাশে স্পেস */
+      display: block;
     }
 
-    /* ===== Second Logo (472×591) ===== */
+    /* Second Logo (472×591) */
     .second-logo {
-      margin-top: 35px;
-      width: 350px;           /* Desktop size */
+      width: 350px;
       max-width: 90%;
       aspect-ratio: 472 / 591;
       object-fit: cover;
       border-radius: 16px;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
       background: #fff;
-    }
-
-    .title {
-      margin-top: 18px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #222;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: #555;
+      margin: 30px auto;   /* চারপাশে স্পেস */
+      display: block;
     }
   </style>
 </head>
@@ -60,16 +60,14 @@
 
   <div class="container">
 
-    <!-- First Logo -->
-    <img src="logo.png" alt="Main Logo 1280x768" class="main-logo">
+    <!-- Heading -->
+    <div class="heading">M.R.H Authority Immage</div>
 
-    <div class="title">M.R.H Online Authority</div>
-    <div class="subtitle">Main Logo (1280 × 768)</div>
+    <!-- First Logo -->
+    <img src="logo.png" alt="Main Logo" class="main-logo">
 
     <!-- Second Logo -->
-    <img src="riyad.png" alt="Riyad Logo 472x591" class="second-logo">
-
-    <div class="subtitle">Secondary Logo (472 × 591)</div>
+    <img src="riyad.png" alt="Riyad Logo" class="second-logo">
 
   </div>
 
