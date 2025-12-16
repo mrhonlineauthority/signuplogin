@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MRH Authority Image</title>
+  <title>MRH Authority Sequential Logos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -11,76 +11,66 @@
       padding: 0;
       background: #f2f4f8;
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* top থেকে start */
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
     .container {
-      width: 100%;
       text-align: center;
-      padding: 30px 10px;
+      position: relative;
+      width: 100%;
+      max-width: 95%;
+      padding-top: 50px; /* হেডিং উপরের দিকে রাখার জন্য spacing */
+      min-height: 80vh;
     }
 
     .heading {
       font-size: 24px;
       font-weight: bold;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       color: #222;
-      letter-spacing: 1px;
+      position: relative; /* হেডিং উপরে রাখার জন্য */
+      z-index: 10;
     }
 
-    /* ===== Animation ===== */
-    @keyframes slideSequence {
-      0% {
-        transform: translateX(120%);
-        opacity: 0;
-      }
-      10% {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      50% {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      60% {
-        transform: translateX(-120%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateX(-120%);
-        opacity: 0;
-      }
-    }
-
-    /* First Logo */
-    .main-logo {
-      width: 800px;
+    .logo {
+      position: absolute;
+      top: 50%; /* হেডিং এর নিচ থেকে start */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      background: #fff;
       max-width: 95%;
-      aspect-ratio: 1280 / 768;
-      object-fit: cover;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      background: #fff;
-      margin: 20px auto;
-      display: block;
-
-      animation: slideSequence 20s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
 
-    /* Second Logo */
-    .second-logo {
-      width: 350px;
-      max-width: 90%;
-      aspect-ratio: 472 / 591;
-      object-fit: cover;
-      border-radius: 16px;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-      background: #fff;
-      margin: 30px auto;
-      display: block;
+    .logo.logo1 {
+      width: 800px;
+      aspect-ratio: 1280 / 768;
+    }
 
-      animation: slideSequence 20s ease-in-out infinite;
-      animation-delay: 10s; /* ১ম লোগো শেষ হলে শুরু */
+    .logo.logo2 {
+      width: 350px;
+      aspect-ratio: 472 / 591;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+      .logo.logo1 {
+        width: 90%;
+      }
+      .logo.logo2 {
+        width: 70%;
+      }
+      .heading {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -88,16 +78,31 @@
 <body>
 
   <div class="container">
-
     <div class="heading">M.R.H Authority Immage</div>
 
-    <!-- First Logo -->
-    <img src="logo.png" alt="Main Logo" class="main-logo">
-
-    <!-- Second Logo -->
-    <img src="riyad.png" alt="Riyad Logo" class="second-logo">
-
+    <!-- Logos -->
+    <img src="logo.png" alt="Logo 1" class="logo logo1">
+    <img src="riyad.png" alt="Logo 2" class="logo logo2">
   </div>
+
+  <script>
+    const logos = document.querySelectorAll('.logo');
+    let current = 0;
+
+    function showNextLogo() {
+      logos.forEach((logo, index) => {
+        logo.style.opacity = '0';
+      });
+      logos[current].style.opacity = '1';
+      current = (current + 1) % logos.length;
+    }
+
+    // প্রথম লোগো দেখানো
+    showNextLogo();
+
+    // 10 সেকেন্ড interval
+    setInterval(showNextLogo, 10000);
+  </script>
 
 </body>
 </html>
