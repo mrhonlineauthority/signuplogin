@@ -11,6 +11,7 @@
       padding: 0;
       background: #f2f4f8;
       font-family: Arial, sans-serif;
+      overflow-x: hidden; /* স্লাইড এনিমেশনের জন্য */
     }
 
     .container {
@@ -23,12 +24,32 @@
     .heading {
       font-size: 24px;
       font-weight: bold;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       color: #222;
       letter-spacing: 1px;
     }
 
-    /* First Logo (1280×768) */
+    /* ===== Animation ===== */
+    @keyframes slideRightToLeft {
+      0% {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+      15% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      85% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-120%);
+        opacity: 0;
+      }
+    }
+
+    /* First Logo */
     .main-logo {
       width: 800px;
       max-width: 95%;
@@ -37,11 +58,13 @@
       border-radius: 14px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       background: #fff;
-      margin: 20px auto;   /* চারপাশে স্পেস */
+      margin: 20px auto;
       display: block;
+
+      animation: slideRightToLeft 10s ease-in-out infinite;
     }
 
-    /* Second Logo (472×591) */
+    /* Second Logo */
     .second-logo {
       width: 350px;
       max-width: 90%;
@@ -50,8 +73,11 @@
       border-radius: 16px;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
       background: #fff;
-      margin: 30px auto;   /* চারপাশে স্পেস */
+      margin: 30px auto;
       display: block;
+
+      animation: slideRightToLeft 10s ease-in-out infinite;
+      animation-delay: 10s; /* প্রথমটার পরে আসবে */
     }
   </style>
 </head>
