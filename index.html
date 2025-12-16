@@ -1,222 +1,388 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- jsPDF + AutoTable -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<title>Login & Signup</title>
 
 <style>
-body { padding: 20px; background: #f8f9fa; }
-
-h2 { text-align: center; margin-bottom: 20px; }
-
-.table th, .table td { vertical-align: middle; font-size: 0.9rem; }
-.table thead th { background-color: #ff69b4; color: white; }
-
-.action-btns { display: flex; gap: 5px; justify-content: center; }
-.btn-sm { width: 35px; height: 35px; padding: 0; border-radius: 50%; }
-
-.star { cursor:pointer; width:20px; height:20px; }
-
-#loginCard {
-  max-width: 400px;
-  margin: 100px auto;
-  padding: 20px;
-  background:white;
-  border-radius:10px;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-#adminPanel { display:none; }
-
-.id-container {
-  display:flex;
-  gap:5px;
-  justify-content:center;
-  cursor:pointer;
+.box {
+    width: 90%;
+    max-width: 380px;
+    background: #ffffff;
+    padding: 17px 13px;
+    border-radius: 14px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    text-align: center;
+    animation: fadeIn 0.4s ease;
 }
 
-/* 🔥 LOGO STYLE */
-.admin-logo {
-  display:flex;
-  justify-content:center;
-  margin-bottom:15px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
 }
-.admin-logo img {
-  width:120px;
-  height:auto;
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    height: 50px;
+    padding: 0 45px 0 14px;
+    margin: 12px 0;
+    border: 2px solid #d4d4d4;
+    border-radius: 8px;
+    font-size: 17px;
+    box-sizing: border-box;
+    transition: all .2s;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+}
+
+/* Login / Signup buttons */
+button {
+    width: 100%;
+    height: 50px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;  /* Forgot Password button এর সাথে gap কমানো */
+    transition: 0.2s;
+}
+
+button:hover {
+    opacity: 0.88;
+    transform: scale(1.02);
+}
+
+/* Google button */
+.google-btn {
+    background: #ffffff;
+    border: 2px solid #dcdcdc;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 17px;
+    margin-top: 18px;
+    border-radius: 8px;
+    height: 50px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.google-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Toggle link */
+.toggle-btn {
+    margin-top: 15px;
+    font-size: 14px;
+    background: none;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Forgot Password button - left aligned & ultra compact */
+.forgot-btn {
+    display: block;          /* left-align */
+    text-align: left;        /* বাম পাশে লেখা */
+    margin: 0;               /* উপরের এবং নিচের margin remove */
+    padding: 0;              /* padding remove */
+    font-size: 13px;         /* একটু ছোট করে compact */
+    background: none;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Login button - compact spacing */
+button {
+    width: 100%;
+    height: 45px;           /* height একটু কমানো */
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 2px;        /* Forgot Password button এর সাথে gap সর্বনিম্ন */
+    transition: 0.2s;
+}
+
+/* Password rules text (Signup page) */
+.password-rules {
+    font-size: 13px;
+    text-align: left;
+    color: #444;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+/* Success box */
+.success-box {
+    width: 90%;
+    max-width: 380px;
+    background: #fff;
+    padding: 35px 28px;
+    border-radius: 14px;
+    text-align: center;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.success-icon {
+    font-size: 70px;
+    color: green;
+    margin-bottom: 20px;
 }
 </style>
 </head>
-
 <body>
 
-<!-- Login -->
-<div id="loginCard">
-  <h2>Admin Login</h2>
-  <input type="email" id="email" class="form-control mb-2" placeholder="Email">
-  <input type="password" id="password" class="form-control mb-2" placeholder="Password">
-  <button id="loginBtn" class="btn btn-primary w-100">Login</button>
-  <div id="loginError" class="text-danger mt-2"></div>
+<!-- Login Box -->
+<div class="box" id="loginBox">
+    <h2>Login</h2>
+
+    <div class="input-group">
+        <input type="email" id="loginEmail" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
+    </div>
+
+    <!-- Forgot Password button moved below password field -->
+    <button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
+
+    <button onclick="emailLogin()">Login</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Login with Google
+    </button>
+
+    <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
 </div>
 
-<!-- Admin Panel -->
-<div id="adminPanel">
+<!-- Signup Box -->
+<div class="box" id="signupBox" style="display:none;">
+    <h2>Sign Up</h2>
 
-  <!-- 🔥 LOGO CENTER -->
-  <div class="admin-logo">
-    <img src="logo.png" alt="MRH Logo">
-  </div>
+    <div class="input-group">
+        <input type="email" id="signupEmail" placeholder="Email">
+    </div>
 
-  <h2>Admin Panel</h2>
+    <div class="input-group">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
+    </div>
 
-  <input type="text" id="searchEmail" class="form-control mb-3"
-         placeholder="Search by Email"
-         style="max-width:400px;margin:auto;">
+    <div class="password-rules" id="passwordRules">
+        ✔ Minimum 8 characters<br>
+        ✔ At least 1 uppercase letter (A–Z)<br>
+        ✔ At least 1 lowercase letter (a–z)<br>
+        ✔ At least 1 number (0–9)<br>
+        ✔ At least 1 special character (!@#$%^&*)<br>
+    </div>
 
-  <div class="table-responsive">
-    <table class="table table-bordered table-sm" id="usersTable">
-      <thead>
-        <tr>
-          <th>Signup Time</th>
-          <th>Full Name</th>
-          <th>Username</th>
-          <th>ID No</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Profile Status</th>
-          <th>Status</th>
-          <th>Action</th>
-          <th>Stars</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <button onclick="emailSignup()">Sign Up</button>
 
-  <div class="d-flex justify-content-end gap-2 mt-3">
-    <button id="downloadPdfBtn" class="btn btn-success">Download PDF</button>
-    <button id="logoutBtn" class="btn btn-danger">Logout</button>
-  </div>
+    <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Sign Up with Google
+    </button>
 
+    <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
 </div>
 
+<!-- Forgot Password Box -->
+<div class="box" id="forgotBox" style="display:none;">
+    <h2>Reset Password</h2>
+
+    <div class="input-group">
+        <input type="email" id="resetEmail" placeholder="Enter your email">
+    </div>
+
+    <button onclick="resetPassword()">Send Reset Link</button>
+
+    <button class="toggle-btn" onclick="showLogin()">Back to Login</button>
+</div>
+
+<!-- Success Box -->
+<div class="success-box" id="successBox">
+    <div class="success-icon">✔</div>
+    <h3>Your login/signup was successful.</h3>
+</div>
+
+<!-- Firebase Scripts -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider, 
+    signInWithPopup,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
-  authDomain: "useradminservice.firebaseapp.com",
-  databaseURL: "https://useradminservice-default-rtdb.firebaseio.com/",
-  projectId: "useradminservice",
+    apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
+    authDomain: "fir-45ded.firebaseapp.com",
+    projectId: "fir-45ded",
+    storageBucket: "fir-45ded.firebasestorage.app",
+    messagingSenderId: "1052838685446",
+    appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-const tbody = document.querySelector("#usersTable tbody");
-
-let allUsers = [];
-
-loginBtn.onclick = () => {
-  signInWithEmailAndPassword(auth,email.value,password.value)
-  .then(res=>{
-    onValue(ref(db,"admins/"+res.user.uid),snap=>{
-      if(snap.exists()){
-        loginCard.style.display="none";
-        adminPanel.style.display="block";
-        loadUsers();
-      }else{
-        signOut(auth);
-        loginError.innerText="Not an admin";
-      }
-    },{onlyOnce:true});
-  }).catch(e=>loginError.innerText=e.message);
+// Show Sections
+window.showSignup = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "block";
+    forgotBox.style.display = "none";
 };
 
-logoutBtn.onclick = ()=>signOut(auth).then(()=>{
-  adminPanel.style.display="none";
-  loginCard.style.display="block";
-});
-
-function loadUsers(){
-  onValue(ref(db,"users"),snap=>{
-    tbody.innerHTML="";
-    allUsers=[];
-    snap.forEach(s=>{
-      const u=s.val();
-      u.uid=s.key;
-      allUsers.push(u);
-    });
-    renderTable();
-  });
-}
-
-function renderTable(){
-  tbody.innerHTML="";
-  allUsers.forEach(u=>{
-    const r=tbody.insertRow();
-    r.insertCell().innerText=u.signupTime?new Date(u.signupTime).toLocaleString():"—";
-    r.insertCell().innerText=u.fullName||"";
-    r.insertCell().innerText=u.username||"";
-    r.insertCell().innerText=u.idNo||"";
-    r.insertCell().innerText=u.phone||"";
-    r.insertCell().innerText=u.email||"";
-    r.insertCell().innerText=u.profileStatus||"";
-    r.insertCell().innerText=u.status||"";
-    r.insertCell().innerText="—";
-    r.insertCell().innerText=u.rating||0;
-  });
-}
-
-/* ================= PDF DOWNLOAD ================= */
-downloadPdfBtn.onclick = () => {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
-
-  doc.setFontSize(16);
-  doc.text("M.R.H Online E-Registration Authority",148,15,{align:"center"});
-  doc.setFontSize(12);
-  doc.text("VIP Account Data",148,23,{align:"center"});
-
-  const tableData = allUsers.map(u=>[
-    u.signupTime?new Date(u.signupTime).toLocaleString():"—",
-    u.fullName||"",
-    u.username||"",
-    u.idNo||"",
-    u.phone||"",
-    u.email||"",
-    u.profileStatus||"",
-    u.status||"",
-    ""
-  ]);
-
-  doc.autoTable({
-    startY:30,
-    head:[["Signup Time","Full Name","Username","ID No","Phone","Email","Profile Status","Status","Signature"]],
-    body:tableData,
-    styles:{
-      fontSize:9,
-      lineColor:[0,0,0],
-      lineWidth:0.1
-    },
-    headStyles:{
-      fillColor:[255,105,180],
-      textColor:255
-    },
-    theme:"grid"
-  });
-
-  doc.save("VIP_Account_Data.pdf");
+window.showLogin = () => {
+    signupBox.style.display = "none";
+    loginBox.style.display = "block";
+    forgotBox.style.display = "none";
 };
+
+window.showForgotPassword = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "block";
+};
+
+// Reset Password
+window.resetPassword = () => {
+    const email = resetEmail.value.trim();
+    if (!email) {
+        alert("⚠ Please enter your email.");
+        return;
+    }
+    sendPasswordResetEmail(auth, email)
+    .then(() => alert("✔ A password reset link has been sent to your email."))
+    .catch(err => alert(err.message));
+};
+
+// Password Toggle
+window.togglePassword = function(fieldId, icon) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+    } else {
+        input.type = "password";
+        icon.textContent = "👁";
+    }
+};
+
+// Password Strength Checker
+function isStrongPassword(pass) {
+    const rules = [
+        /.{8,}/,       // Minimum 8 characters
+        /[A-Z]/,       // At least 1 uppercase
+        /[a-z]/,       // At least 1 lowercase
+        /[0-9]/,       // At least 1 number
+        /[!@#$%^&*]/   // At least 1 special character
+    ];
+    return rules.every(rule => rule.test(pass));
+}
+
+// Sign Up
+window.emailSignup = () => {
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value;
+
+    if (!email) {
+        alert("⚠ Please enter your email.");
+        return;
+    }
+    if (!password) {
+        alert("⚠ Please enter your password.");
+        return;
+    }
+    if (!isStrongPassword(password)) {
+        alert("⚠ Your password is not strong enough!\n\nFollow these rules:\n- Minimum 8 characters\n- At least 1 uppercase letter\n- At least 1 lowercase letter\n- At least 1 number\n- At least 1 special character (!@#$%^&*)");
+        return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+// Login
+window.emailLogin = () => {
+    signInWithEmailAndPassword(auth, loginEmail.value.trim(), loginPassword.value)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+// Google Login
+window.googleLogin = () => {
+    signInWithPopup(auth, provider)
+    .then(() => showSuccess())
+    .catch(err => alert(err.message));
+};
+
+// Success Box
+function showSuccess() {
+    loginBox.style.display = "none";
+    signupBox.style.display = "none";
+    forgotBox.style.display = "none";
+    successBox.style.display = "block";
+}
 </script>
 
 </body>
