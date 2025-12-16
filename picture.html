@@ -2,54 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MRH Logo Preview</title>
+  <title>MRH Logo Display System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #f4f6f9;
+      background: #f2f4f8;
       font-family: Arial, sans-serif;
     }
 
-    .logo-wrapper {
+    .container {
       width: 100%;
       text-align: center;
       padding: 30px 10px;
     }
 
-    .logo-wrapper img {
-      max-width: 90%;          /* মোবাইলে ঠিক থাকবে */
-      width: 600px;            /* Desktop এ সুন্দর সাইজ */
-      aspect-ratio: 16 / 9;    /* YouTube Thumbnail Ratio */
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    /* ===== First Logo (1280×768) ===== */
+    .main-logo {
+      width: 800px;           /* Desktop size */
+      max-width: 95%;
+      aspect-ratio: 1280 / 768;
       object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      background: #fff;
+    }
+
+    /* ===== Second Logo (472×591) ===== */
+    .second-logo {
+      margin-top: 35px;
+      width: 350px;           /* Desktop size */
+      max-width: 90%;
+      aspect-ratio: 472 / 591;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
       background: #fff;
     }
 
     .title {
-      margin-top: 20px;
+      margin-top: 18px;
       font-size: 20px;
       font-weight: bold;
-      color: #333;
+      color: #222;
     }
 
     .subtitle {
       font-size: 14px;
-      color: #666;
+      color: #555;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="logo-wrapper">
-    <img src="logo.png" alt="MRH YouTube Thumbnail Logo">
+  <div class="container">
+
+    <!-- First Logo -->
+    <img src="logo.png" alt="Main Logo 1280x768" class="main-logo">
 
     <div class="title">M.R.H Online Authority</div>
-    <div class="subtitle">YouTube Thumbnail Logo Preview</div>
+    <div class="subtitle">Main Logo (1280 × 768)</div>
+
+    <!-- Second Logo -->
+    <img src="riyad.png" alt="Riyad Logo 472x591" class="second-logo">
+
+    <div class="subtitle">Secondary Logo (472 × 591)</div>
+
   </div>
 
 </body>
