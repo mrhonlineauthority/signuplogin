@@ -13,7 +13,7 @@
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* top থেকে start */
+      align-items: flex-start;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -23,7 +23,7 @@
       position: relative;
       width: 100%;
       max-width: 95%;
-      padding-top: 50px; /* হেডিং উপরের দিকে রাখার জন্য spacing */
+      padding-top: 50px;
       min-height: 80vh;
     }
 
@@ -32,13 +32,13 @@
       font-weight: bold;
       margin-bottom: 30px;
       color: #222;
-      position: relative; /* হেডিং উপরে রাখার জন্য */
+      position: relative;
       z-index: 10;
     }
 
     .logo {
       position: absolute;
-      top: 50%; /* হেডিং এর নিচ থেকে start */
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       object-fit: cover;
@@ -47,7 +47,7 @@
       background: #fff;
       max-width: 95%;
       opacity: 0;
-      transition: opacity 1s ease-in-out;
+      transition: opacity 0.8s ease-in-out; /* fade speed */
     }
 
     .logo.logo1 {
@@ -59,8 +59,11 @@
       width: 350px;
       aspect-ratio: 472 / 591;
     }
+    .logo.logo3 {
+      width: 400px;
+      aspect-ratio: 1126 / 860;
+}
 
-    /* Mobile responsive */
     @media (max-width: 600px) {
       .logo.logo1 {
         width: 90%;
@@ -80,9 +83,9 @@
   <div class="container">
     <div class="heading">M.R.H Authority Immage</div>
 
-    <!-- Logos -->
     <img src="logo.png" alt="Logo 1" class="logo logo1">
     <img src="riyad.png" alt="Logo 2" class="logo logo2">
+    <img src="nnsc.png" alt="Logo 3" class="logo logo3">
   </div>
 
   <script>
@@ -90,9 +93,7 @@
     let current = 0;
 
     function showNextLogo() {
-      logos.forEach((logo, index) => {
-        logo.style.opacity = '0';
-      });
+      logos.forEach(logo => logo.style.opacity = '0');
       logos[current].style.opacity = '1';
       current = (current + 1) % logos.length;
     }
@@ -100,8 +101,8 @@
     // প্রথম লোগো দেখানো
     showNextLogo();
 
-    // 10 সেকেন্ড interval
-    setInterval(showNextLogo, 10000);
+    // প্রতিটি লোগো 5 সেকেন্ডে পরিবর্তন
+    setInterval(showNextLogo, 5000); // 5000 ms = 5 seconds
   </script>
 
 </body>
