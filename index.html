@@ -3,409 +3,220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login & Signup</title>
+<title>Admin Panel</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jsPDF + AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #f1f1f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+body { padding: 20px; background: #f8f9fa; }
 
-    .box {
-        width: 90%;
-        max-width: 320px;
-        background: #ffffff;
-        padding: 25px 20px;
-        border-radius: 14px;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-        text-align: center;
-        animation: fadeIn 0.4s ease;
-    }
+h2 { text-align: center; margin-bottom: 20px; }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to   { opacity: 1; transform: scale(1); }
-    }
+.table th, .table td { vertical-align: middle; font-size: 0.9rem; }
+.table thead th { background-color: #ff69b4; color: white; }
 
-    h2 {
-        margin-bottom: 18px;
-        color: #333;
-        font-size: 26px;
-        font-weight: bold;
-    }
+.action-btns { display: flex; gap: 5px; justify-content: center; }
+.btn-sm { width: 35px; height: 35px; padding: 0; border-radius: 50%; }
 
-    .input-group {
-        position: relative;
-        width: 100%;
-        margin: 10px 0;
-    }
+.star { cursor:pointer; width:20px; height:20px; }
 
-    input {
-        width: 100%;
-        height: 48px;
-        padding: 0 14px 0 40px;
-        border: 2px solid #d4d4d4;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: all .2s;
-        box-sizing: border-box;
-    }
+#loginCard {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+  background:white;
+  border-radius:10px;
+}
 
-    input:focus { border-color: #007bff; }
+#adminPanel { display:none; }
 
-    .eye-icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 18px;
-        color: #555;
-    }
+.id-container {
+  display:flex;
+  gap:5px;
+  justify-content:center;
+  cursor:pointer;
+}
 
-    button {
-        width: 100%;
-        height: 48px;
-        background: #007bff;
-        border: none;
-        color: white;
-        border-radius: 8px;
-        font-size: 17px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
-        position: relative;
-        overflow: hidden;
-    }
-
-    button:hover { opacity: 0.88; }
-
-    /* Button Loader */
-    .btn-loader {
-        border: 3px solid transparent;
-        border-top: 3px solid white;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        animation: spin 0.7s linear infinite;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: none;
-    }
-
-    @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    button.loading span { visibility: hidden; }
-    button.loading .btn-loader { display: block; }
-
-    .forgot-btn {
-        width: 100%;
-        text-align: left;
-        margin-top: 2px;
-        font-size: 13px;
-        background: none;
-        color: #007bff;
-        border: none;
-        cursor: pointer;
-    }
-
-    .google-btn {
-        background: #ffffff;
-        border: 2px solid #dcdcdc;
-        color: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        font-size: 16px;
-        margin-top: 14px;
-        border-radius: 8px;
-        height: 48px;
-        cursor: pointer;
-    }
-
-    .google-btn img { width: 22px; }
-
-    .toggle-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .password-rules {
-        font-size: 12px;
-        text-align: left;
-        color: #444;
-        margin-top: -4px;
-        margin-bottom: 6px;
-    }
-
-    .success-box {
-        width: 90%;
-        max-width: 320px;
-        background: #fff;
-        padding: 35px 25px;
-        border-radius: 14px;
-        text-align: center;
-        display: none;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .success-icon {
-        font-size: 60px;
-        color: green;
-        margin-bottom: 15px;
-    }
-
-    /* Input Icons */
-    .input-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .input-icon svg {
-        width: 20px;
-        height: 20px;
-        fill: #888;
-    }
+/* 🔥 LOGO STYLE */
+.admin-logo {
+  display:flex;
+  justify-content:center;
+  margin-bottom:15px;
+}
+.admin-logo img {
+  width:120px;
+  height:auto;
+}
 </style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
-<div class="box" id="loginBox">
-    <h2>Login</h2>
-
-    <div class="input-group">
-        <span class="input-icon email-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path>
-            </svg>
-        </span>
-        <input type="email" id="loginEmail" placeholder="Email">
-    </div>
-
-    <div class="input-group">
-        <span class="input-icon password-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path>
-            </svg>
-        </span>
-        <input type="password" id="loginPassword" placeholder="Password">
-        <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
-    </div>
-
-    <button class="forgot-btn" onclick="forgotPass()">Forgot Password?</button>
-
-    <button id="loginBtn" onclick="emailLogin()">
-        <span>Login</span>
-        <div class="btn-loader"></div>
-    </button>
-
-    <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Login with Google
-    </button>
-
-    <div style="margin-top: 10px; font-size: 14px; text-align:center;">
-        <span style="color: #000;">Don't have an account? </span>
-        <span onclick="showSignup()" style="color:#007bff; cursor:pointer;">Sign Up</span>
-    </div>
+<!-- Login -->
+<div id="loginCard">
+  <h2>Admin Login</h2>
+  <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+  <input type="password" id="password" class="form-control mb-2" placeholder="Password">
+  <button id="loginBtn" class="btn btn-primary w-100">Login</button>
+  <div id="loginError" class="text-danger mt-2"></div>
 </div>
 
-<!-- SIGNUP -->
-<div class="box" id="signupBox" style="display:none;">
-    <h2>Sign Up</h2>
+<!-- Admin Panel -->
+<div id="adminPanel">
 
-    <div class="input-group">
-        <span class="input-icon email-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8.99L12 13L4 8.99V6L12 10L20 6V8.99Z"></path>
-            </svg>
-        </span>
-        <input type="email" id="signupEmail" placeholder="Email">
-    </div>
+  <!-- 🔥 LOGO CENTER -->
+  <div class="admin-logo">
+    <img src="logo.png" alt="MRH Logo">
+  </div>
 
-    <div class="input-group">
-        <span class="input-icon password-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM17 8H16V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8ZM10 6C10 4.9 10.9 4 12 4C13.1 4 14 4.9 14 6V8H10V6Z"></path>
-            </svg>
-        </span>
-        <input type="password" id="signupPassword" placeholder="Password">
-        <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
-    </div>
+  <h2>Admin Panel</h2>
 
-    <div class="password-rules">
-        ✔ Minimum 8 characters<br>
-        ✔ At least 1 uppercase letter<br>
-        ✔ At least 1 lowercase letter<br>
-        ✔ At least 1 number<br>
-        ✔ At least 1 special character (!@#$%^&*)<br>
-    </div>
+  <input type="text" id="searchEmail" class="form-control mb-3"
+         placeholder="Search by Email"
+         style="max-width:400px;margin:auto;">
 
-    <button id="signupBtn" onclick="emailSignup()">
-        <span>Sign Up</span>
-        <div class="btn-loader"></div>
-    </button>
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm" id="usersTable">
+      <thead>
+        <tr>
+          <th>Signup Time</th>
+          <th>Full Name</th>
+          <th>Username</th>
+          <th>ID No</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Profile Status</th>
+          <th>Status</th>
+          <th>Action</th>
+          <th>Stars</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-    <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Sign Up with Google
-    </button>
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button id="downloadPdfBtn" class="btn btn-success">Download PDF</button>
+    <button id="logoutBtn" class="btn btn-danger">Logout</button>
+  </div>
 
-    <div style="margin-top: 10px; font-size: 14px; text-align:center;">
-        <span style="color: #000;">Already have an account? </span>
-        <span onclick="showLogin()" style="color:#007bff; cursor:pointer;">Login</span>
-    </div>
-</div>
-
-<!-- SUCCESS -->
-<div class="success-box" id="successBox">
-    <div class="success-icon">✔</div>
-    <h3>Your login/signup was successful.</h3>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { 
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    sendPasswordResetEmail,
-    signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
-    authDomain: "fir-45ded.firebaseapp.com",
-    projectId: "fir-45ded",
-    storageBucket: "fir-45ded.firebasestorage.app",
-    messagingSenderId: "1052838685446",
-    appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
+  apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
+  authDomain: "useradminservice.firebaseapp.com",
+  databaseURL: "https://useradminservice-default-rtdb.firebaseio.com/",
+  projectId: "useradminservice",
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
-/* Password Toggle */
-window.togglePassword = function(id, icon){
-    let input = document.getElementById(id);
-    input.type = input.type === "password" ? "text" : "password";
-    icon.textContent = input.type === "text" ? "🙈" : "👁";
+const tbody = document.querySelector("#usersTable tbody");
+
+let allUsers = [];
+
+loginBtn.onclick = () => {
+  signInWithEmailAndPassword(auth,email.value,password.value)
+  .then(res=>{
+    onValue(ref(db,"admins/"+res.user.uid),snap=>{
+      if(snap.exists()){
+        loginCard.style.display="none";
+        adminPanel.style.display="block";
+        loadUsers();
+      }else{
+        signOut(auth);
+        loginError.innerText="Not an admin";
+      }
+    },{onlyOnce:true});
+  }).catch(e=>loginError.innerText=e.message);
 };
 
-/* Password Rules */
-function isStrongPassword(pass){
-    return (
-        /.{8,}/.test(pass) &&
-        /[A-Z]/.test(pass) &&
-        /[a-z]/.test(pass) &&
-        /[0-9]/.test(pass) &&
-        /[!@#$%^&*]/.test(pass)
-    );
-}
+logoutBtn.onclick = ()=>signOut(auth).then(()=>{
+  adminPanel.style.display="none";
+  loginCard.style.display="block";
+});
 
-/* BUTTON LOADER FUNCTIONS */
-function startLoading(btn){
-    btn.classList.add("loading");
-}
-function stopLoading(btn){
-    btn.classList.remove("loading");
-}
-
-/* Switch Pages */
-window.showSignup = () => {
-    loginBox.style.display = "none";
-    signupBox.style.display = "block";
-};
-window.showLogin = () => {
-    signupBox.style.display = "none";
-    loginBox.style.display = "block";
-};
-
-/* Forgot Password */
-window.forgotPass = () => {
-    const email = loginEmail.value.trim();
-    if(!email) return alert("Enter your email first!");
-
-    sendPasswordResetEmail(auth, email)
-    .then(() => alert("Password reset link sent to your email."))
-    .catch(err => alert(err.message));
-};
-
-/* LOGIN */
-window.emailLogin = () => {
-    startLoading(loginBtn);
-
-    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
-    .then(() => {
-        stopLoading(loginBtn);
-        showSuccess();
-    })
-    .catch(err => {
-        stopLoading(loginBtn);
-        alert(err.message);
+function loadUsers(){
+  onValue(ref(db,"users"),snap=>{
+    tbody.innerHTML="";
+    allUsers=[];
+    snap.forEach(s=>{
+      const u=s.val();
+      u.uid=s.key;
+      allUsers.push(u);
     });
-};
-
-/* SIGNUP */
-window.emailSignup = () => {
-    const pass = signupPassword.value;
-
-    if(!isStrongPassword(pass)){
-        alert("⚠ Follow password rules!");
-        return;
-    }
-
-    startLoading(signupBtn);
-
-    createUserWithEmailAndPassword(auth, signupEmail.value, pass)
-    .then(() => {
-        stopLoading(signupBtn);
-        showSuccess();
-    })
-    .catch(err => {
-        stopLoading(signupBtn);
-        alert(err.message);
-    });
-};
-
-/* GOOGLE LOGIN */
-window.googleLogin = () => {
-    signInWithPopup(auth, provider)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
-
-function showSuccess(){
-    loginBox.style.display = "none";
-    signupBox.style.display = "none";
-    successBox.style.display = "block";
+    renderTable();
+  });
 }
+
+function renderTable(){
+  tbody.innerHTML="";
+  allUsers.forEach(u=>{
+    const r=tbody.insertRow();
+    r.insertCell().innerText=u.signupTime?new Date(u.signupTime).toLocaleString():"—";
+    r.insertCell().innerText=u.fullName||"";
+    r.insertCell().innerText=u.username||"";
+    r.insertCell().innerText=u.idNo||"";
+    r.insertCell().innerText=u.phone||"";
+    r.insertCell().innerText=u.email||"";
+    r.insertCell().innerText=u.profileStatus||"";
+    r.insertCell().innerText=u.status||"";
+    r.insertCell().innerText="—";
+    r.insertCell().innerText=u.rating||0;
+  });
+}
+
+/* ================= PDF DOWNLOAD ================= */
+downloadPdfBtn.onclick = () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+
+  doc.setFontSize(16);
+  doc.text("M.R.H Online E-Registration Authority",148,15,{align:"center"});
+  doc.setFontSize(12);
+  doc.text("VIP Account Data",148,23,{align:"center"});
+
+  const tableData = allUsers.map(u=>[
+    u.signupTime?new Date(u.signupTime).toLocaleString():"—",
+    u.fullName||"",
+    u.username||"",
+    u.idNo||"",
+    u.phone||"",
+    u.email||"",
+    u.profileStatus||"",
+    u.status||"",
+    ""
+  ]);
+
+  doc.autoTable({
+    startY:30,
+    head:[["Signup Time","Full Name","Username","ID No","Phone","Email","Profile Status","Status","Signature"]],
+    body:tableData,
+    styles:{
+      fontSize:9,
+      lineColor:[0,0,0],
+      lineWidth:0.1
+    },
+    headStyles:{
+      fillColor:[255,105,180],
+      textColor:255
+    },
+    theme:"grid"
+  });
+
+  doc.save("VIP_Account_Data.pdf");
+};
 </script>
 
 </body>
