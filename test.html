@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jsPDF + AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+body { padding: 20px; background: #f8f9fa; }
+
+h2 { text-align: center; margin-bottom: 20px; }
+
+.table th, .table td { vertical-align: middle; font-size: 0.9rem; }
+.table thead th { background-color: #ff69b4; color: white; }
+
+.action-btns { display: flex; gap: 5px; justify-content: center; }
+.btn-sm { width: 35px; height: 35px; padding: 0; border-radius: 50%; }
+
+.star { cursor:pointer; width:20px; height:20px; }
+
+#loginCard {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+  background:white;
+  border-radius:10px;
+}
+
+#adminPanel { display:none; }
+
+.id-container {
+  display:flex;
+  gap:5px;
+  justify-content:center;
+  cursor:pointer;
+}
+
+/* 🔥 LOGO STYLE */
+.admin-logo {
+  display:flex;
+  justify-content:center;
+  margin-bottom:15px;
+}
+.admin-logo img {
+  width:120px;
+  height:auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Login -->
+<div id="loginCard">
+  <h2>Admin Login</h2>
+  <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+  <input type="password" id="password" class="form-control mb-2" placeholder="Password">
+  <button id="loginBtn" class="btn btn-primary w-100">Login</button>
+  <div id="loginError" class="text-danger mt-2"></div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+
+  <!-- 🔥 LOGO CENTER -->
+  <div class="admin-logo">
+    <img src="logo.png" alt="MRH Logo">
+  </div>
+
+  <h2>Admin Panel</h2>
+
+  <input type="text" id="searchEmail" class="form-control mb-3"
+         placeholder="Search by Email"
+         style="max-width:400px;margin:auto;">
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm" id="usersTable">
+      <thead>
+        <tr>
+          <th>Signup Time</th>
+          <th>Full Name</th>
+          <th>Username</th>
+          <th>ID No</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Profile Status</th>
+          <th>Status</th>
+          <th>Action</th>
+          <th>Stars</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button id="downloadPdfBtn" class="btn btn-success">Download PDF</button>
+    <button id="logoutBtn" class="btn btn-danger">Logout</button>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCUedI7nd4-qBDBPQQlNReEZmy18BSgGYA",
+  authDomain: "useradminservice.firebaseapp.com",
+  databaseURL: "https://useradminservice-default-rtdb.firebaseio.com/",
+  projectId: "useradminservice",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const tbody = document.querySelector("#usersTable tbody");
+
+let allUsers = [];
+
+loginBtn.onclick = () => {
+  signInWithEmailAndPassword(auth,email.value,password.value)
+  .then(res=>{
+    onValue(ref(db,"admins/"+res.user.uid),snap=>{
+      if(snap.exists()){
+        loginCard.style.display="none";
+        adminPanel.style.display="block";
+        loadUsers();
+      }else{
+        signOut(auth);
+        loginError.innerText="Not an admin";
+      }
+    },{onlyOnce:true});
+  }).catch(e=>loginError.innerText=e.message);
+};
+
+logoutBtn.onclick = ()=>signOut(auth).then(()=>{
+  adminPanel.style.display="none";
+  loginCard.style.display="block";
+});
+
+function loadUsers(){
+  onValue(ref(db,"users"),snap=>{
+    tbody.innerHTML="";
+    allUsers=[];
+    snap.forEach(s=>{
+      const u=s.val();
+      u.uid=s.key;
+      allUsers.push(u);
+    });
+    renderTable();
+  });
+}
+
+function renderTable(){
+  tbody.innerHTML="";
+  allUsers.forEach(u=>{
+    const r=tbody.insertRow();
+    r.insertCell().innerText=u.signupTime?new Date(u.signupTime).toLocaleString():"—";
+    r.insertCell().innerText=u.fullName||"";
+    r.insertCell().innerText=u.username||"";
+    r.insertCell().innerText=u.idNo||"";
+    r.insertCell().innerText=u.phone||"";
+    r.insertCell().innerText=u.email||"";
+    r.insertCell().innerText=u.profileStatus||"";
+    r.insertCell().innerText=u.status||"";
+    r.insertCell().innerText="—";
+    r.insertCell().innerText=u.rating||0;
+  });
+}
+
+/* ================= PDF DOWNLOAD ================= */
+downloadPdfBtn.onclick = () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+
+  doc.setFontSize(16);
+  doc.text("M.R.H Online E-Registration Authority",148,15,{align:"center"});
+  doc.setFontSize(12);
+  doc.text("VIP Account Data",148,23,{align:"center"});
+
+  const tableData = allUsers.map(u=>[
+    u.signupTime?new Date(u.signupTime).toLocaleString():"—",
+    u.fullName||"",
+    u.username||"",
+    u.idNo||"",
+    u.phone||"",
+    u.email||"",
+    u.profileStatus||"",
+    u.status||"",
+    ""
+  ]);
+
+  doc.autoTable({
+    startY:30,
+    head:[["Signup Time","Full Name","Username","ID No","Phone","Email","Profile Status","Status","Signature"]],
+    body:tableData,
+    styles:{
+      fontSize:9,
+      lineColor:[0,0,0],
+      lineWidth:0.1
+    },
+    headStyles:{
+      fillColor:[255,105,180],
+      textColor:255
+    },
+    theme:"grid"
+  });
+
+  doc.save("VIP_Account_Data.pdf");
+};
+</script>
+
+</body>
+</html>
