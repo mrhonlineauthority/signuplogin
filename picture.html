@@ -11,7 +11,7 @@
       padding: 0;
       background: #f2f4f8;
       font-family: Arial, sans-serif;
-      overflow-x: hidden; /* স্লাইড এনিমেশনের জন্য */
+      overflow-x: hidden;
     }
 
     .container {
@@ -20,7 +20,6 @@
       padding: 30px 10px;
     }
 
-    /* Heading */
     .heading {
       font-size: 24px;
       font-weight: bold;
@@ -30,18 +29,22 @@
     }
 
     /* ===== Animation ===== */
-    @keyframes slideRightToLeft {
+    @keyframes slideSequence {
       0% {
         transform: translateX(120%);
         opacity: 0;
       }
-      15% {
+      10% {
         transform: translateX(0);
         opacity: 1;
       }
-      85% {
+      50% {
         transform: translateX(0);
         opacity: 1;
+      }
+      60% {
+        transform: translateX(-120%);
+        opacity: 0;
       }
       100% {
         transform: translateX(-120%);
@@ -61,7 +64,7 @@
       margin: 20px auto;
       display: block;
 
-      animation: slideRightToLeft 10s ease-in-out infinite;
+      animation: slideSequence 20s ease-in-out infinite;
     }
 
     /* Second Logo */
@@ -76,8 +79,8 @@
       margin: 30px auto;
       display: block;
 
-      animation: slideRightToLeft 10s ease-in-out infinite;
-      animation-delay: 10s; /* প্রথমটার পরে আসবে */
+      animation: slideSequence 20s ease-in-out infinite;
+      animation-delay: 10s; /* ১ম লোগো শেষ হলে শুরু */
     }
   </style>
 </head>
@@ -86,7 +89,6 @@
 
   <div class="container">
 
-    <!-- Heading -->
     <div class="heading">M.R.H Authority Immage</div>
 
     <!-- First Logo -->
