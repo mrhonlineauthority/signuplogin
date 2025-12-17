@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,12 @@
 <title>Login & Signup</title>
 
 <style>
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -26,362 +31,310 @@ body {
     border-radius: 14px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.12);
     text-align: center;
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to   { opacity: 1; transform: scale(1); }
 }
 
 h2 {
-    margin-bottom: 20px;
-    color: #333;
+    margin-bottom: 15px;
     font-size: 28px;
-    font-weight: bold;
 }
 
-.input-group {
-    position: relative;
-    width: 100%;
+/* LOGO */
+.logo-box{
+    display:flex;
+    justify-content:center;
+    margin:0.10px 0 3px;
+}
+.logo-box img{
+    width:80px;
+    height:auto;
 }
 
-input {
-    width: 100%;
-    height: 50px;
-    padding: 0 45px 0 14px;
-    margin: 12px 0;
-    border: 2px solid #d4d4d4;
-    border-radius: 8px;
-    font-size: 17px;
-    box-sizing: border-box;
-    transition: all .2s;
+/* INPUT */
+.input-group{
+    position:relative;
+    width:100%;
 }
 
-input:focus {
-    border-color: #007bff;
-    outline: none;
+input{
+    width:100%;
+    height:50px;
+    padding:0 45px 0 14px;
+    margin:10px 0;
+    border:2px solid #d4d4d4;
+    border-radius:8px;
+    font-size:16px;
 }
 
-.eye-icon {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 20px;
-    color: #555;
+input:focus{
+    border-color:#007bff;
+    outline:none;
 }
 
-/* Login / Signup buttons */
-button {
-    width: 100%;
-    height: 50px;
-    background: #007bff;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 8px;  /* Forgot Password button এর সাথে gap কমানো */
-    transition: 0.2s;
+.eye-icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
 }
 
-button:hover {
-    opacity: 0.88;
-    transform: scale(1.02);
+/* BUTTON */
+button{
+    width:100%;
+    height:45px;
+    background:#007bff;
+    border:none;
+    color:white;
+    border-radius:8px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:6px;
+    position:relative;
 }
 
-/* Google button */
-.google-btn {
-    background: #ffffff;
-    border: 2px solid #dcdcdc;
-    color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 17px;
-    margin-top: 18px;
-    border-radius: 8px;
-    height: 50px;
-    cursor: pointer;
-    transition: 0.2s;
+/* LOADER */
+.loader{
+    width:22px;
+    height:22px;
+    border:3px solid rgba(255,255,255,.4);
+    border-top:3px solid white;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:auto;
 }
 
-.google-btn img {
-    width: 24px;
-    height: 24px;
+@keyframes spin{
+    to{transform:rotate(360deg);}
 }
 
-/* Toggle link */
-.toggle-btn {
-    margin-top: 15px;
-    font-size: 14px;
-    background: none;
-    color: #007bff;
-    border: none;
-    cursor: pointer;
+.google-btn{
+    background:#fff;
+    border:2px solid #ddd;
+    color:#333;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:14px;
 }
 
-/* Forgot Password button - left aligned & ultra compact */
-.forgot-btn {
-    display: block;          /* left-align */
-    text-align: left;        /* বাম পাশে লেখা */
-    margin: 0;               /* উপরের এবং নিচের margin remove */
-    padding: 0;              /* padding remove */
-    font-size: 13px;         /* একটু ছোট করে compact */
-    background: none;
-    color: #007bff;
-    border: none;
-    cursor: pointer;
+.google-btn img{
+    width:22px;
 }
 
-/* Login button - compact spacing */
-button {
-    width: 100%;
-    height: 45px;           /* height একটু কমানো */
-    background: #007bff;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 2px;        /* Forgot Password button এর সাথে gap সর্বনিম্ন */
-    transition: 0.2s;
+.toggle-btn,
+.forgot-btn{
+    background:none;
+    border:none;
+    color:#007bff;
+    cursor:pointer;
+    font-size:13px;
+    margin-top:0.10px;
 }
 
-/* Password rules text (Signup page) */
-.password-rules {
-    font-size: 13px;
-    text-align: left;
-    color: #444;
-    margin-top: -5px;
-    margin-bottom: 10px;
+.password-rules{
+    text-align:left;
+    font-size:13px;
+    margin-bottom:8px;
 }
 
-/* Success box */
-.success-box {
-    width: 90%;
-    max-width: 380px;
-    background: #fff;
-    padding: 35px 28px;
-    border-radius: 14px;
-    text-align: center;
-    display: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+/* ✅ SUCCESS PAGE */
+.success-box{
+    width:90%;
+    max-width:380px;
+    background:#fff;
+    padding:30px 20px;
+    border-radius:14px;
+    text-align:center;
+    box-shadow:0 6px 15px rgba(0,0,0,.12);
+    display:none;
 }
-
-.success-icon {
-    font-size: 70px;
-    color: green;
-    margin-bottom: 20px;
+.success-logo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    overflow:hidden;
+    margin:0 auto 15px;
+}
+.success-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+.success-text{
+    font-size:16px;
+    color:green;
+    line-height:1.5;
 }
 </style>
 </head>
 <body>
 
-<!-- Login Box -->
+<!-- LOGIN -->
 <div class="box" id="loginBox">
-    <h2>Login</h2>
+<h2>Login</h2>
 
-    <div class="input-group">
-        <input type="email" id="loginEmail" placeholder="Email">
-    </div>
-
-    <div class="input-group">
-        <input type="password" id="loginPassword" placeholder="Password">
-        <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
-    </div>
-
-    <!-- Forgot Password button moved below password field -->
-    <button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
-
-    <button onclick="emailLogin()">Login</button>
-
-    <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Login with Google
-    </button>
-
-    <button class="toggle-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
+<div class="logo-box">
+<img src="https://mrhonlineauthority.github.io/ebent/mrhlogo.png">
 </div>
 
-<!-- Signup Box -->
+<div class="input-group">
+<input type="email" id="loginEmail" placeholder="Email">
+</div>
+
+<div class="input-group">
+<input type="password" id="loginPassword" placeholder="Password">
+<span class="eye-icon" onclick="togglePassword('loginPassword',this)">👁</span>
+</div>
+
+<button class="forgot-btn" onclick="showForgotPassword()">Forgot Password?</button>
+
+<button id="loginBtn" onclick="emailLogin()">Login</button>
+
+<button class="google-btn" onclick="googleLogin()">
+<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+Login with Google
+</button>
+
+<button class="toggle-btn" onclick="showSignup()">Don't have account? Sign Up</button>
+</div>
+
+<!-- SIGNUP -->
 <div class="box" id="signupBox" style="display:none;">
-    <h2>Sign Up</h2>
+<h2>Sign Up</h2>
 
-    <div class="input-group">
-        <input type="email" id="signupEmail" placeholder="Email">
-    </div>
-
-    <div class="input-group">
-        <input type="password" id="signupPassword" placeholder="Password">
-        <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
-    </div>
-
-    <div class="password-rules" id="passwordRules">
-        ✔ Minimum 8 characters<br>
-        ✔ At least 1 uppercase letter (A–Z)<br>
-        ✔ At least 1 lowercase letter (a–z)<br>
-        ✔ At least 1 number (0–9)<br>
-        ✔ At least 1 special character (!@#$%^&*)<br>
-    </div>
-
-    <button onclick="emailSignup()">Sign Up</button>
-
-    <button class="google-btn" onclick="googleLogin()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-        Sign Up with Google
-    </button>
-
-    <button class="toggle-btn" onclick="showLogin()">Already have an account? Login</button>
+<div class="logo-box">
+<img src="https://mrhonlineauthority.github.io/ebent/mrhlogo.png">
 </div>
 
-<!-- Forgot Password Box -->
+<div class="input-group">
+<input type="email" id="signupEmail" placeholder="Email">
+</div>
+
+<div class="input-group">
+<input type="password" id="signupPassword" placeholder="Password">
+<span class="eye-icon" onclick="togglePassword('signupPassword',this)">👁</span>
+</div>
+
+<div class="password-rules">
+✔ Minimum 8 characters<br>
+✔ At least 1 uppercase letter (A–Z)<br>
+✔ At least 1 lowercase letter (a–z)<br>
+✔ At least 1 number (0–9)<br>
+✔ At least 1 special character (!@#$%^&*)
+</div>
+
+<button id="signupBtn" onclick="emailSignup()">Sign Up</button>
+
+<button class="google-btn" onclick="googleLogin()">
+<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+Sign Up with Google
+</button>
+
+<button class="toggle-btn" onclick="showLogin()">Already have account? Login</button>
+</div>
+
+<!-- FORGOT -->
 <div class="box" id="forgotBox" style="display:none;">
-    <h2>Reset Password</h2>
+<h2>Reset Password</h2>
 
-    <div class="input-group">
-        <input type="email" id="resetEmail" placeholder="Enter your email">
-    </div>
-
-    <button onclick="resetPassword()">Send Reset Link</button>
-
-    <button class="toggle-btn" onclick="showLogin()">Back to Login</button>
+<div class="input-group">
+<input type="email" id="resetEmail" placeholder="Email">
 </div>
 
-<!-- Success Box -->
+<button onclick="resetPassword()">Send Reset Link</button>
+<button class="toggle-btn" onclick="showLogin()">Back</button>
+</div>
+
+<!-- ✅ SUCCESS PAGE -->
 <div class="success-box" id="successBox">
-    <div class="success-icon">✔</div>
-    <h3>Your login/signup was successful.</h3>
+  <div class="success-logo">
+    <img src="https://mrhonlineauthority.github.io/ebent/mrhlogo.png">
+  </div>
+  <div class="success-text">
+    Your signup/login was successful.<br>
+    Thank you!
+  </div>
 </div>
 
-<!-- Firebase Scripts -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { 
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    GoogleAuthProvider, 
-    signInWithPopup,
-    sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
-    authDomain: "fir-45ded.firebaseapp.com",
-    projectId: "fir-45ded",
-    storageBucket: "fir-45ded.firebasestorage.app",
-    messagingSenderId: "1052838685446",
-    appId: "1:1052838685446:web:73848d62b91fb7e3a88c87"
+ apiKey:"AIzaSyAkdYFZXCnb32f83BcsvSslbU6tny5HGrs",
+ authDomain:"fir-45ded.firebaseapp.com",
+ projectId:"fir-45ded"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-// Show Sections
-window.showSignup = () => {
-    loginBox.style.display = "none";
-    signupBox.style.display = "block";
-    forgotBox.style.display = "none";
-};
+window.showSignup=()=>{loginBox.style.display="none";signupBox.style.display="block";forgotBox.style.display="none";}
+window.showLogin=()=>{signupBox.style.display="none";loginBox.style.display="block";forgotBox.style.display="none";}
+window.showForgotPassword=()=>{loginBox.style.display="none";signupBox.style.display="none";forgotBox.style.display="block";}
 
-window.showLogin = () => {
-    signupBox.style.display = "none";
-    loginBox.style.display = "block";
-    forgotBox.style.display = "none";
-};
-
-window.showForgotPassword = () => {
-    loginBox.style.display = "none";
-    signupBox.style.display = "none";
-    forgotBox.style.display = "block";
-};
-
-// Reset Password
-window.resetPassword = () => {
-    const email = resetEmail.value.trim();
-    if (!email) {
-        alert("⚠ Please enter your email.");
-        return;
-    }
-    sendPasswordResetEmail(auth, email)
-    .then(() => alert("✔ A password reset link has been sent to your email."))
-    .catch(err => alert(err.message));
-};
-
-// Password Toggle
-window.togglePassword = function(fieldId, icon) {
-    const input = document.getElementById(fieldId);
-    if (input.type === "password") {
-        input.type = "text";
-        icon.textContent = "🙈";
-    } else {
-        input.type = "password";
-        icon.textContent = "👁";
-    }
-};
-
-// Password Strength Checker
-function isStrongPassword(pass) {
-    const rules = [
-        /.{8,}/,       // Minimum 8 characters
-        /[A-Z]/,       // At least 1 uppercase
-        /[a-z]/,       // At least 1 lowercase
-        /[0-9]/,       // At least 1 number
-        /[!@#$%^&*]/   // At least 1 special character
-    ];
-    return rules.every(rule => rule.test(pass));
+function showSuccess(){
+ loginBox.style.display="none";
+ signupBox.style.display="none";
+ forgotBox.style.display="none";
+ successBox.style.display="block";
 }
 
-// Sign Up
-window.emailSignup = () => {
-    const email = signupEmail.value.trim();
-    const password = signupPassword.value;
+function setLoader(btn){
+ btn.innerHTML='<div class="loader"></div>';
+ btn.disabled=true;
+}
+function resetBtn(btn,text){
+ btn.innerHTML=text;
+ btn.disabled=false;
+}
 
-    if (!email) {
-        alert("⚠ Please enter your email.");
-        return;
-    }
-    if (!password) {
-        alert("⚠ Please enter your password.");
-        return;
-    }
-    if (!isStrongPassword(password)) {
-        alert("⚠ Your password is not strong enough!\n\nFollow these rules:\n- Minimum 8 characters\n- At least 1 uppercase letter\n- At least 1 lowercase letter\n- At least 1 number\n- At least 1 special character (!@#$%^&*)");
-        return;
-    }
+function isStrongPassword(p){
+ return /.{8,}/.test(p)&&/[A-Z]/.test(p)&&/[a-z]/.test(p)&&/[0-9]/.test(p)&&/[!@#$%^&*]/.test(p);
+}
 
-    createUserWithEmailAndPassword(auth, email, password)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
+window.emailSignup=()=>{
+ const btn=document.getElementById("signupBtn");
+ const pass=signupPassword.value;
+ if(!isStrongPassword(pass)){
+   alert("Password not strong!");
+   return;
+ }
+ setLoader(btn);
+ createUserWithEmailAndPassword(auth,signupEmail.value,pass)
+ .then(()=>showSuccess())
+ .catch(e=>alert(e.message))
+ .finally(()=>resetBtn(btn,"Sign Up"));
+}
 
-// Login
-window.emailLogin = () => {
-    signInWithEmailAndPassword(auth, loginEmail.value.trim(), loginPassword.value)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
+window.emailLogin=()=>{
+ const btn=document.getElementById("loginBtn");
+ setLoader(btn);
+ signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value)
+ .then(()=>showSuccess())
+ .catch(e=>alert(e.message))
+ .finally(()=>resetBtn(btn,"Login"));
+}
 
-// Google Login
-window.googleLogin = () => {
-    signInWithPopup(auth, provider)
-    .then(() => showSuccess())
-    .catch(err => alert(err.message));
-};
+window.googleLogin=()=>{
+ signInWithPopup(auth,provider)
+ .then(()=>showSuccess())
+ .catch(e=>alert(e.message));
+}
 
-// Success Box
-function showSuccess() {
-    loginBox.style.display = "none";
-    signupBox.style.display = "none";
-    forgotBox.style.display = "none";
-    successBox.style.display = "block";
+window.resetPassword=()=>{
+ sendPasswordResetEmail(auth,resetEmail.value)
+ .then(()=>alert("Reset link sent"))
+ .catch(e=>alert(e.message));
+}
+
+window.togglePassword=(id,icon)=>{
+ const i=document.getElementById(id);
+ i.type=i.type==="password"?"text":"password";
+ icon.textContent=i.type==="password"?"👁":"🙈";
 }
 </script>
 
